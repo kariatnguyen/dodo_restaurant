@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>DoDo Restaurant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="h-screen bg-cover bg-center relative"
+      style="background-image: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5');">
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+    <!-- Header -->
+    <div class="absolute top-0 left-0 w-full flex justify-between items-center px-6 py-4 z-10">
+        <h1 class="text-white text-xl font-bold tracking-wide">
+            🍽️ DoDo
+        </h1>
+
+        <button class="px-5 py-2 rounded-xl bg-white/20 text-white font-semibold 
+                       hover:bg-white/30 transition backdrop-blur" onclick="window.location.href='/login'">
+            Đăng nhập
+        </button>
+    </div>
+
+    <!-- Main -->
+    <div class="relative h-full flex items-center justify-center">
+
+        <!-- Card -->
+        <form action="/join-table" method="POST"
+            class="w-full max-w-md p-8 rounded-3xl 
+                    bg-white/90 backdrop-blur-lg 
+                    shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/30">
+
+            <!-- Title -->
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-extrabold text-gray-800">
+                    Nhập mã bàn
+                </h2>
+                <p class="text-gray-500 mt-2 text-sm">
+                    Bắt đầu đặt món nhanh chóng
+                </p>
+            </div>
+
+            <!-- Input -->
+            <div class="relative mb-5">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                    🔑
+                </span>
+                <input
+                    type="text"
+                    name="table_code"
+                    placeholder="DODO-8F3K"
+                    required
+                    class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200
+                        text-center text-lg tracking-widest font-semibold
+                        focus:outline-none focus:ring-2 focus:ring-orange-400
+                        transition">
+            </div>
+
+            <!-- Button -->
+            <button type="submit"
+                    class="w-full py-3 rounded-xl font-semibold text-white text-lg
+                        bg-gradient-to-r from-orange-500 to-red-500
+                        hover:from-orange-600 hover:to-red-600
+                        active:scale-95 transition duration-200 shadow-lg">
+                Vào bàn
+            </button>
+
+            <!-- Note -->
+            <p class="text-xs text-gray-400 text-center mt-6">
+                Không có mã? Hãy hỏi nhân viên
+            </p>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

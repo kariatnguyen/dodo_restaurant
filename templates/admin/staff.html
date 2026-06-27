@@ -1,0 +1,1091 @@
+{% extends "admin/include.html" %}
+{% block content_css %}
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f3f4f6;
+  color:#111827;
+}
+
+/* HEADER */
+
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+}
+
+
+.logout{
+  font-size:14px;
+  color:#6b7280;
+  cursor:pointer;
+}
+
+/* NAV */
+
+.nav{
+  width:1150px;
+  margin:18px auto 0;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:14px;
+}
+
+.nav button{
+  height:42px;
+  padding:0 22px;
+  border:none;
+  border-radius:14px;
+  background:transparent;
+  font-size:15px;
+  font-weight:700;
+  color:#4b5563;
+  cursor:pointer;
+}
+
+.nav .active{
+  background:#f97316;
+  color:#fff;
+}
+
+/* WRAPPER */
+
+.wrapper{
+  width:1150px;
+  margin:22px auto;
+}
+
+/* PANEL */
+
+.panel{
+  background:#fff;
+  border-radius:28px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+  margin-bottom:28px;
+}
+
+/* PANEL TOP */
+
+.panel-top{
+  padding:20px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #f1f5f9;
+}
+
+.panel-title{
+  font-size:20px;
+  font-weight:800;
+}
+
+.panel-sub{
+  margin-top:4px;
+  color:#9ca3af;
+  font-size:13px;
+}
+
+.panel-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.search{
+  width:240px;
+  height:42px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:0 14px;
+  outline:none;
+}
+
+.select-role{
+  height:42px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:0 14px;
+  background:#fff;
+}
+
+.add-btn{
+  height:42px;
+  padding:0 20px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* TABLE */
+
+.table-header,
+.table-row{
+  display:grid;
+  grid-template-columns:2fr 1.2fr 1.2fr 1fr 1fr;
+  align-items:center;
+}
+
+.table-header{
+  padding:16px 24px;
+  border-bottom:1px solid #f1f5f9;
+  font-size:12px;
+  font-weight:700;
+  color:#9ca3af;
+}
+
+.table-row{
+  padding:18px 24px;
+  border-bottom:1px solid #f9fafb;
+}
+
+.user-name{
+  font-size:17px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+
+.username{
+  font-size:13px;
+  color:#9ca3af;
+  font-weight:700;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  width:max-content;
+}
+
+.admin{
+  background:#ffedd5;
+  color:#ea580c;
+}
+
+.kitchen{
+  background:#e0e7ff;
+  color:#4338ca;
+}
+
+.guest{
+  background:#d1fae5;
+  color:#059669;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+}
+
+.active-dot{
+  background:#22c55e;
+}
+
+.inactive-dot{
+  background:#d1d5db;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+}
+
+.action-btn{
+  height:34px;
+  padding:0 14px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700;
+}
+
+.edit-btn{
+  background:#eef2ff;
+  color:#4338ca;
+}
+
+.delete-btn{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+.lock-btn{
+  background:#fef3c7;
+  color:#d97706;
+}
+
+/* PERMISSION */
+
+.permission-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.permission-table th{
+  background:#f8fafc;
+  color:#9ca3af;
+  font-size:12px;
+  font-weight:700;
+}
+
+.permission-table th,
+.permission-table td{
+  border:1px solid #e5e7eb;
+  padding:18px;
+  text-align:center;
+}
+
+.permission-role{
+  font-weight:800;
+  font-size:16px;
+}
+
+.permission-group{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+}
+
+.permission-btn{
+  min-width:62px;
+  height:30px;
+  border:none;
+  border-radius:8px;
+  background:#f97316;
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.permission-btn.off{
+  background:#f3f4f6;
+  color:#d1d5db;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  width:520px;
+  background:#fff;
+  border-radius:28px;
+  padding:28px;
+}
+
+.modal-title{
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:24px;
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+.form-label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.form-input,
+.form-select{
+  width:100%;
+  height:48px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:0 16px;
+  outline:none;
+}
+
+.modal-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  margin-top:28px;
+}
+
+.cancel-btn{
+  height:44px;
+  padding:0 18px;
+  border:none;
+  border-radius:14px;
+  background:#f3f4f6;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.save-btn{
+  height:44px;
+  padding:0 20px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+@media(max-width:1200px){
+
+  .wrapper,
+  .nav{
+    width:calc(100% - 24px);
+  }
+
+}
+
+@media(max-width:900px){
+
+  .table-header{
+    display:none;
+  }
+
+  .table-row{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+
+  .panel-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+}
+
+</style>
+{% endblock %}
+{% block content %}
+
+<!-- WRAPPER -->
+
+<div class="wrapper">
+
+  <!-- NHÂN VIÊN -->
+
+  <div class="panel">
+
+    <div class="panel-top">
+
+      <div>
+
+        <div class="panel-title">
+          DANH SÁCH NHÂN VIÊN
+        </div>
+
+        <div class="panel-sub">
+          Tổng số: <span id="totalStaff">4</span> nhân sự
+        </div>
+
+      </div>
+
+      <div class="panel-actions">
+
+        <input
+          type="text"
+          class="search"
+          id="searchInput"
+          placeholder="Tìm tên hoặc username..."
+        />
+
+        <select class="select-role" id="roleFilter">
+
+          <option value="ALL">
+            Tất cả vai trò
+          </option>
+
+          <option value="ADMIN">
+            ADMIN
+          </option>
+
+          <option value="KITCHEN">
+            KITCHEN
+          </option>
+
+          <option value="GUEST">
+            GUEST
+          </option>
+
+        </select>
+
+        <button class="add-btn" id="openModalBtn">
+          THÊM NHÂN VIÊN
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="table-header">
+
+      <div>HỌ VÀ TÊN / USERNAME</div>
+      <div>VAI TRÒ</div>
+      <div>NGÀY GIA NHẬP</div>
+      <div>TRẠNG THÁI</div>
+      <div>THAO TÁC</div>
+
+    </div>
+
+    <div id="staffList">
+
+      <!-- ITEM -->
+
+      {% for s in staff %}
+<div class="table-row">
+
+  <div>
+    <div class="user-name">{{ s.name }}</div>
+    <div class="username">@{{ s.username }}</div>
+  </div>
+
+  <div>
+    <span class="badge">{{ s.role_name }}</span>
+  </div>
+
+  <div>
+    {{ s.created_at }}
+  </div>
+
+  <div class="status">
+    {% if s.status == "active" %}
+      <div class="dot active-dot"></div> ACTIVE
+    {% else %}
+      <div class="dot"></div> LOCKED
+    {% endif %}
+  </div>
+
+  <div class="actions">
+
+    <button class="action-btn edit-btn"
+      onclick="openEditStaff('{{ s.employee_id }}','{{ s.name }}','{{ s.username }}','{{ s.role_name }}')">
+      Sửa
+    </button>
+
+    <a href="/admin/staff/lock/{{ s.employee_id }}"
+       class="action-btn lock-btn">
+      Khóa
+    </a>
+
+    <a href="/admin/staff/delete/{{ s.employee_id }}"
+       class="action-btn delete-btn"
+       onclick="return confirm('Xóa nhân viên?')">
+      Xóa
+    </a>
+
+  </div>
+
+</div>
+{% endfor %}
+
+    </div>
+
+  </div>
+
+  <!-- PHÂN QUYỀN -->
+
+  <div class="panel">
+
+    <div class="panel-top">
+
+      <div class="panel-title">
+        BẢNG PHÂN QUYỀN VAI TRÒ
+      </div>
+
+    </div>
+
+    <table class="permission-table">
+
+      <thead>
+
+        <tr>
+
+          <th>VAI TRÒ</th>
+          <th>THỰC ĐƠN</th>
+          <th>KHO HÀNG</th>
+          <th>SƠ ĐỒ BÀN</th>
+          <th>NHÂN SỰ</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td class="permission-role">
+            ADMIN
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td class="permission-role">
+            KITCHEN
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn off">
+                THÊM
+              </button>
+
+              <button class="permission-btn off">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn  off">
+                THÊM
+              </button>
+
+              <button class="permission-btn  off">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn off">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn off">
+                XEM
+              </button>
+
+              <button class="permission-btn off">
+                THÊM
+              </button>
+
+              <button class="permission-btn off">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td class="permission-role">
+            STAFF
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn off">
+                XEM
+              </button>
+
+              <button class="permission-btn off">
+                THÊM
+              </button>
+
+              <button class="permission-btn off">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn">
+                XEM
+              </button>
+
+              <button class="permission-btn">
+                THÊM
+              </button>
+
+              <button class="permission-btn">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+          <td>
+
+            <div class="permission-group">
+
+              <button class="permission-btn off">
+                XEM
+              </button>
+
+              <button class="permission-btn off">
+                THÊM
+              </button>
+
+              <button class="permission-btn off">
+                SỬA
+              </button>
+
+              <button class="permission-btn off">
+                XÓA
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal"
+     style="position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:999;">
+
+  <div class="modal-box"
+       style="width:450px;background:#fff;border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.2);">
+
+    <div style="font-size:20px;font-weight:800;margin-bottom:18px;">
+      👤 Thêm nhân viên
+    </div>
+
+    <form method="POST" action="/admin/staff/add">
+
+      <!-- Họ tên -->
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Họ và tên</label>
+        <input name="name" type="text"
+               placeholder="Nguyễn Văn A"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px;">
+      </div>
+
+      <!-- Phone -->
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Số điện thoại</label>
+        <input name="phone" type="text"
+               placeholder="090xxxxxxx"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px;">
+      </div>
+
+      <!-- Username -->
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Username</label>
+        <input name="username" type="text"
+               placeholder="admin01"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px;">
+      </div>
+
+      <!-- Password -->
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Mật khẩu</label>
+        <input name="password" type="password"
+               placeholder="••••••••"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px;">
+      </div>
+
+      <!-- Role -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Vai trò</label>
+        <select name="role_id"
+                style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px;">
+
+          {% for r in roles %}
+            <option value="{{ r.role_id }}">
+              {{ r.role_name }}
+            </option>
+          {% endfor %}
+
+        </select>
+      </div>
+
+      <!-- BUTTON -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+
+        <button type="button"
+                id="closeModalBtn"
+                style="padding:8px 14px;border:none;border-radius:10px;background:#e5e7eb;font-weight:700;cursor:pointer;">
+          Hủy
+        </button>
+
+        <button type="submit"
+                style="padding:8px 14px;border:none;border-radius:10px;background:#f97316;color:#fff;font-weight:700;cursor:pointer;">
+          Lưu nhân viên
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<div class="modal" id="staffModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); align-items:center; justify-content:center; z-index:999;">
+
+  <div style="width:420px; background:#fff; border-radius:16px; padding:20px;">
+
+    <div style="font-size:20px; font-weight:800; margin-bottom:15px;">
+      <span id="modalTitle">Thêm nhân viên</span>
+    </div>
+
+    <form method="POST" action="/admin/staff/save">
+
+      <!-- ID (ẩn khi sửa) -->
+      <input type="hidden" name="employee_id" id="employee_id">
+
+      <!-- Họ tên -->
+      <div style="margin-bottom:10px;">
+        <label>Họ tên</label>
+        <input name="name" id="staffName"
+               style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+
+      <!-- Username -->
+      <div style="margin-bottom:10px;">
+        <label>Username</label>
+        <input name="username" id="staffUsername"
+               style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+
+      <!-- Phone -->
+      <div style="margin-bottom:10px;">
+        <label>Số điện thoại</label>
+        <input name="phone" id="staffPhone"
+               style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+
+      <!-- Password -->
+      <div style="margin-bottom:10px;">
+        <label>Mật khẩu</label>
+        <input type="password" name="password" id="staffPassword"
+               style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+
+      <!-- Role -->
+      <div style="margin-bottom:15px;">
+        <label>Vai trò</label>
+        <select name="role_id" id="staffRole"
+                style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+          {% for r in roles %}
+            <option value="{{ r.role_id }}">{{ r.role_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- BUTTON -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" onclick="closeStaffModal()"
+                style="padding:8px 14px;background:#eee;border:none;border-radius:8px;">
+          Hủy
+        </button>
+
+        <button type="submit"
+                style="padding:8px 14px;background:#f97316;color:#fff;border:none;border-radius:8px;">
+          Lưu
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+
+function openAddStaff(){
+  document.getElementById("modalTitle").innerText = "Thêm nhân viên";
+
+  document.getElementById("employee_id").value = "";
+  document.getElementById("staffName").value = "";
+  document.getElementById("staffUsername").value = "";
+  document.getElementById("staffPhone").value = "";
+  document.getElementById("staffPassword").value = "";
+
+  document.getElementById("staffModal").style.display = "flex";
+}
+
+function openEditStaff(id, name, username, phone, role_id){
+  document.getElementById("modalTitle").innerText = "Sửa nhân viên";
+
+  document.getElementById("employee_id").value = id;
+  document.getElementById("staffName").value = name;
+  document.getElementById("staffUsername").value = username;
+  document.getElementById("staffPhone").value = phone;
+  document.getElementById("staffRole").value = role_id;
+
+  document.getElementById("staffPassword").value = "";
+
+  document.getElementById("staffModal").style.display = "flex";
+}
+
+function closeStaffModal(){
+  document.getElementById("staffModal").style.display = "none";
+}
+
+/* click outside */
+document.getElementById("staffModal").onclick = function(e){
+  if(e.target === this){
+    closeStaffModal();
+  }
+}
+
+</script>
+
+<script>
+document.getElementById("openModalBtn").onclick = () => {
+  document.getElementById("modal").style.display = "flex";
+};
+
+document.getElementById("closeModalBtn").onclick = () => {
+  document.getElementById("modal").style.display = "none";
+};
+
+document.getElementById("modal").onclick = (e) => {
+  if (e.target === e.currentTarget) {
+    e.currentTarget.style.display = "none";
+  }
+};
+</script>
+{% endblock %}

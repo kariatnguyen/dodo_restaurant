@@ -1,0 +1,662 @@
+{% extends "admin/include.html" %}
+{% block content_css %}
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f3f4f6;
+  color:#111827;
+}
+
+/* HEADER */
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+}
+
+.logout{
+  color:#6b7280;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* WRAPPER */
+.wrapper{
+  width:1150px;
+  margin:20px auto;
+}
+
+/* MENU */
+.menu-tabs{
+  display:flex;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.menu-tab{
+  padding:12px 20px;
+  border-radius:14px;
+  background:#fff;
+  border:1px solid #ececec;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.menu-tab.active{
+  background:#f97316;
+  color:#fff;
+}
+
+/* PANEL */
+.panel{
+  background:#fff;
+  border-radius:28px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+}
+
+.panel-top{
+  padding:22px 24px;
+  border-bottom:1px solid #ececec;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.panel-title{
+  font-size:22px;
+  font-weight:800;
+}
+
+.top-actions{
+  display:flex;
+  gap:10px;
+}
+
+.orange-btn{
+  height:42px;
+  padding:0 18px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.gray-btn{
+  height:42px;
+  padding:0 18px;
+  border:none;
+  border-radius:14px;
+  background:#111827;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* SEARCH */
+.search-box{
+  padding:20px 24px;
+  border-bottom:1px solid #ececec;
+}
+
+.search-input{
+  width:100%;
+  height:48px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:0 16px;
+  font-size:14px;
+}
+
+/* TABLE */
+.table-header,
+.table-row{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr 1.4fr;
+  align-items:center;
+}
+
+.table-header{
+  padding:18px 24px;
+  border-bottom:1px solid #ececec;
+  color:#9ca3af;
+  font-size:12px;
+  font-weight:700;
+}
+
+.table-row{
+  padding:18px 24px;
+  border-bottom:1px solid #f3f4f6;
+}
+
+.material-name{
+  font-size:16px;
+  font-weight:700;
+}
+
+.stock{
+  font-weight:800;
+}
+
+.stock.low{
+  color:#e11d48;
+}
+
+.unit{
+  color:#9ca3af;
+  font-size:12px;
+  margin-left:4px;
+}
+
+.price{
+  font-weight:700;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:30px;
+  padding:0 14px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  width:max-content;
+}
+
+.safe{
+  background:#dcfce7;
+  color:#16a34a;
+}
+
+.warning{
+  background:#ffe4e6;
+  color:#e11d48;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.action-btn{
+  height:34px;
+  padding:0 14px;
+  border:none;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.edit-btn{
+  background:#eef2ff;
+  color:#4338ca;
+}
+
+.delete-btn{
+  background:#111827;
+  color:#fff;
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-bottom:20px;
+}
+
+.stat-card{
+  background:#fff;
+  border-radius:24px;
+  padding:24px;
+  border:1px solid #ececec;
+}
+
+.stat-label{
+  color:#9ca3af;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.stat-value{
+  font-size:30px;
+  font-weight:800;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  width:520px;
+  background:#fff;
+  border-radius:28px;
+  padding:28px;
+}
+
+.modal-title{
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:24px;
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+.form-label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.form-input,
+.form-select{
+  width:100%;
+  height:48px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:0 16px;
+}
+
+.modal-footer{
+  margin-top:26px;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+
+.cancel-btn{
+  height:44px;
+  padding:0 18px;
+  border:none;
+  border-radius:14px;
+  background:#f3f4f6;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.save-btn{
+  height:44px;
+  padding:0 22px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  cursor:pointer;
+  font-weight:700;
+}
+
+@media(max-width:1200px){
+
+  .wrapper{
+    width:calc(100% - 30px);
+  }
+
+}
+
+@media(max-width:900px){
+
+  .table-header{
+    display:none;
+  }
+
+  .table-row{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+}
+
+/* NAV */
+
+.nav{
+  width:1150px;
+  margin:18px auto 0;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:14px;
+}
+
+.nav button{
+  height:42px;
+  padding:0 22px;
+  border:none;
+  border-radius:14px;
+  background:transparent;
+  font-size:15px;
+  font-weight:700;
+  color:#4b5563;
+  cursor:pointer;
+}
+
+.nav .active{
+  background:#f97316;
+  color:#fff;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+
+<!-- WRAPPER -->
+<div class="wrapper">
+
+  <!-- STATS -->
+  <div class="stats">
+
+    <div class="stat-card">
+
+      <div class="stat-label">
+        Tổng nguyên liệu
+      </div>
+
+      <div class="stat-value" id="totalItems">
+        {{ total_items }}
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-label">
+        Nguyên liệu sắp hết
+      </div>
+
+      <div class="stat-value" id="lowStock">
+        {{ low_stock }}
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-label">
+        Tổng giá trị kho
+      </div>
+
+      <div class="stat-value" id="inventoryValue">
+        {{ "{:,.0f}".format(inventory_value) }}đ
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel">
+
+    <div class="panel-top">
+
+      <div class="panel-title">
+        QUẢN LÝ KHO NGUYÊN LIỆU
+      </div>
+
+      <div class="top-actions">
+
+        <button
+            onclick="openAddIngredientModal()"
+            style="background:#16a34a;color:#fff;padding:6px 10px;border:none;border-radius:6px;cursor:pointer;">
+            + Thêm nguyên liệu
+        </button>
+
+        <button class="gray-btn" id="exportBtn" onclick="window.location.href='/admin/warehouse/export_word'">
+          Xuất báo cáo Word
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="Tìm nguyên liệu..."
+      />
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-header">
+
+      <div>TÊN NGUYÊN LIỆU</div>
+      <div>TỒN KHO</div>
+      <div>GIÁ NHẬP</div>
+      <div>TRẠNG THÁI</div>
+      <div>HÀNH ĐỘNG</div>
+
+    </div>
+
+    <!-- LIST -->
+    <div id="inventoryList">
+
+  {% for i in ingredients %}
+
+  <div class="table-row">
+
+    <div>
+      {{ i.name }}
+    </div>
+
+    <div>
+      {{ i.stock }} {{ i.unit }}
+    </div>
+
+    <div>
+      {{ "{:,.0f}".format(i.price) }}đ
+    </div>
+
+    <div>
+      {% if i.stock < 10 %}
+        <span style="color:red;font-weight:bold;">Sắp hết</span>
+      {% else %}
+        <span style="color:green;font-weight:bold;">Còn hàng</span>
+      {% endif %}
+    </div>
+
+    <div>
+      <button
+        onclick="openImportModal('{{ i.ingredient_id }}')"
+        style="background:#4f46e5;color:#fff;padding:6px 10px;border:none;border-radius:6px;cursor:pointer;">
+        Nhập thêm
+    </button>
+    </div>
+
+  </div>
+
+  {% endfor %}
+
+</div>
+
+  </div>
+
+</div>
+
+<div id="importModal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:999;">
+
+  <div style="width:420px;background:#fff;padding:20px;border-radius:12px;">
+
+    <h3 style="margin-bottom:15px;">Nhập kho nguyên liệu</h3>
+
+    <form method="POST" action="/admin/warehouse/import">
+
+      <input type="hidden" name="ingredient_id" id="import_id">
+
+      <div style="margin-bottom:10px;">
+        <label>Số lượng nhập</label>
+        <input type="number" name="qty"
+               style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <label>Ghi chú</label>
+        <input type="text" name="note"
+               style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" onclick="closeImportModal()"
+                style="padding:8px 12px;background:#eee;border:none;border-radius:8px;">
+          Hủy
+        </button>
+
+        <button type="submit"
+                style="padding:8px 12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;">
+          Nhập
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+
+function openImportModal(id){
+    document.getElementById("importModal").style.display = "flex";
+    document.getElementById("import_id").value = id;
+}
+
+function closeImportModal(){
+    document.getElementById("importModal").style.display = "none";
+}
+
+/* click outside */
+document.getElementById("importModal").onclick = function(e){
+    if(e.target === this){
+        closeImportModal();
+    }
+}
+
+</script>
+
+<div id="addIngredientModal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:999;">
+
+  <div style="width:450px;background:#fff;padding:20px;border-radius:12px;">
+
+    <h3 style="margin-bottom:15px;">Thêm nguyên liệu mới</h3>
+
+    <form method="POST" action="/admin/warehouse/add_ingredient">
+
+      <!-- Tên -->
+      <div style="margin-bottom:10px;">
+        <label>Tên nguyên liệu</label>
+        <input type="text" name="name"
+               style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;"
+               placeholder="Ví dụ: Thịt bò phi lê">
+      </div>
+
+      <!-- Số lượng -->
+      <div style="margin-bottom:10px;">
+        <label>Số lượng ban đầu</label>
+        <input type="number" name="stock"
+               style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;"
+               placeholder="0">
+      </div>
+
+      <!-- Đơn vị -->
+      <div style="margin-bottom:10px;">
+        <label>Đơn vị</label>
+        <select name="unit"
+                style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+          <option value="KG">KG</option>
+          <option value="BOX">BOX</option>
+          <option value="CHAI">CHAI</option>
+          <option value="CÂN">CÂN</option>
+          <option value="QUẢ">QUẢ</option>
+        </select>
+      </div>
+
+      <!-- Giá nhập -->
+      <div style="margin-bottom:10px;">
+        <label>Giá nhập</label>
+        <input type="number" name="price"
+               style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;"
+               placeholder="250000">
+      </div>
+
+      <!-- BUTTON -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:15px;">
+
+        <button type="button"
+                onclick="closeAddIngredientModal()"
+                style="padding:8px 12px;background:#eee;border:none;border-radius:8px;">
+          Hủy
+        </button>
+
+        <button type="submit"
+                style="padding:8px 12px;background:#16a34a;color:#fff;border:none;border-radius:8px;">
+          Lưu
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+
+function openAddIngredientModal(){
+    document.getElementById("addIngredientModal").style.display = "flex";
+}
+
+function closeAddIngredientModal(){
+    document.getElementById("addIngredientModal").style.display = "none";
+}
+
+/* click outside */
+document.getElementById("addIngredientModal").onclick = function(e){
+    if(e.target === this){
+        closeAddIngredientModal();
+    }
+}
+
+</script>
+
+{% endblock %}

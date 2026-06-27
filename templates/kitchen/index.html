@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoDo Kitchen</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f3f4f6;
+  color:#0f172a;
+}
+
+/* HEADER */
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.logo-box{
+  width:30px;
+  height:30px;
+  border-radius:6px;
+  background:#f97316;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+
+.logo-text{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-weight:700;
+  font-size:14px;
+}
+
+.kitchen{
+  color:#f97316;
+  font-size:12px;
+}
+
+.logout{
+  color:#6b7280;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* CONTENT */
+.container{
+  width:1240px;
+  margin:24px auto;
+}
+
+.top-section{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:28px;
+}
+
+.page-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.page-subtitle{
+  color:#6b7280;
+  font-size:14px;
+}
+
+/* FILTER */
+.filter-tabs{
+  height:44px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:4px;
+  display:flex;
+  gap:4px;
+}
+
+.filter-btn{
+  border:none;
+  background:transparent;
+  padding:0 18px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  color:#4b5563;
+}
+
+.filter-btn.active{
+  background:#f97316;
+  color:#fff;
+}
+
+/* GRID */
+.orders-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:24px;
+}
+
+/* CARD */
+.order-card{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid #e5e7eb;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  transition:0.2s;
+}
+
+.order-card:hover{
+  transform:translateY(-3px);
+}
+
+.order-card.cooking{
+  background:#fb923c;
+  color:#fff;
+  border-color:#fb923c;
+}
+
+.order-content{
+  padding:18px 18px 14px;
+}
+
+.order-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.order-code{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#6b7280;
+}
+
+.order-card.cooking .order-code{
+  color:#fff;
+}
+
+.order-time{
+  font-size:12px;
+  font-weight:700;
+}
+
+.food-name{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:18px;
+  line-height:1.2;
+}
+
+.food-qty{
+  font-size:34px;
+  font-weight:800;
+}
+
+/* FOOTER */
+.order-footer{
+  background:#f8fafc;
+  padding:16px;
+}
+
+.order-card.cooking .order-footer{
+  background:#fff;
+}
+
+.action-btn{
+  width:100%;
+  height:46px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.start-btn{
+  background:#1e293b;
+  color:#fff;
+}
+
+.done-btn{
+  background:#3bb061;
+  color:#fff;
+}
+
+@media(max-width:1300px){
+
+  .container{
+    width:calc(100% - 30px);
+  }
+
+  .orders-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:700px){
+
+  .orders-grid{
+    grid-template-columns:1fr;
+  }
+
+  .top-section{
+    flex-direction:column;
+    gap:18px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="topbar">
+
+  <div class="logo">
+
+    <div class="logo-box">
+      DD
+    </div>
+
+    <div class="logo-text">
+      <span>DoDo</span>
+      <span class="kitchen">KITCHEN</span>
+    </div>
+
+  </div>
+
+  <a href="{{ url_for('logout') }}" style="color:#6b7280; text-decoration:none; font-weight:600;">
+    Đăng xuất
+  </a>
+
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- TOP -->
+  <div class="top-section">
+
+    <div>
+
+      <div class="page-title">
+        Màn hình Bếp
+      </div>
+
+      <div class="page-subtitle">
+        Quản lý chế biến và theo dõi món ăn
+      </div>
+
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-tabs">
+
+      <button class="filter-btn active"
+              data-filter="cooking">
+        Đang chế biến (<span id="cookingCount">1</span>)
+      </button>
+
+      <button class="filter-btn"
+              data-filter="all">
+        Tất cả món ăn
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- GRID -->
+  <div class="orders-grid">
+
+  {% for i in items %}
+
+  <div class="order-card {{ i.status }}"
+       data-status="{{ i.status }}">
+
+    <div class="order-content">
+
+      <div class="order-top">
+
+        <div class="order-code">
+          BÀN {{ i.table_name }} • #{{ i.order_id }}
+        </div>
+
+        <div class="order-time">
+          {{ i.order_time.strftime('%H:%M') }}
+        </div>
+
+      </div>
+
+      <div class="food-name">
+        {{ i.item_name }}
+      </div>
+
+      <div class="food-qty">
+        × {{ i.quantity }}
+      </div>
+
+    </div>
+
+    <div class="order-footer">
+
+      {% if i.status == 'waiting' %}
+
+      <form method="POST" action="/kitchen/start/{{ i.order_item_id }}">
+        <button class="action-btn start-btn">
+          Bắt đầu nấu
+        </button>
+      </form>
+
+      {% else %}
+
+      <form method="POST" action="/kitchen/done/{{ i.order_item_id }}">
+        <button class="action-btn done-btn">
+          Hoàn thành
+        </button>
+      </form>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+  {% endfor %}
+
+</div>
+
+</div>
+
+<script>
+
+/* FILTER */
+const filterBtns = document.querySelectorAll(".filter-btn");
+const cards = document.querySelectorAll(".order-card");
+
+filterBtns.forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    filterBtns.forEach(b => b.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    const filter = btn.dataset.filter;
+
+    cards.forEach(card => {
+
+      if(filter === "all"){
+
+        card.style.display = "block";
+
+      }else{
+
+        if(card.dataset.status === "cooking"){
+
+          card.style.display = "block";
+
+        }else{
+
+          card.style.display = "none";
+
+        }
+
+      }
+
+    });
+
+  });
+
+});
+
+/* START COOKING */
+document.querySelectorAll(".start-btn").forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    const card = btn.closest(".order-card");
+
+    card.classList.add("cooking");
+
+    card.dataset.status = "cooking";
+
+    btn.classList.remove("start-btn");
+
+    btn.classList.add("done-btn");
+
+    btn.innerHTML = "Hoàn thành";
+
+    updateCookingCount();
+
+  });
+
+});
+
+/* COMPLETE */
+document.addEventListener("click", (e) => {
+
+  if(e.target.classList.contains("done-btn")){
+
+    const card = e.target.closest(".order-card");
+
+    card.style.opacity = "0";
+
+    card.style.transform = "scale(.9)";
+
+    setTimeout(() => {
+
+      card.remove();
+
+      updateCookingCount();
+
+    }, 250);
+
+  }
+
+});
+
+/* UPDATE COUNT */
+function updateCookingCount(){
+
+  const cookingCards = document.querySelectorAll(
+    '.order-card[data-status="cooking"]'
+  );
+
+  document.getElementById("cookingCount")
+    .innerHTML = cookingCards.length;
+
+}
+
+</script>
+
+</body>
+</html>

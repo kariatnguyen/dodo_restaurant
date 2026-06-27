@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JusDun — Basic But Beautiful</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════
+   RESET & BASE
+═══════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+:root {
+  --c-dark:    #1a1008;
+  --c-brown:   #4a2e1a;
+  --c-mid:     #7a5240;
+  --c-warm:    #b08060;
+  --c-sand:    #d4bfa8;
+  --c-cream:   #f2ece4;
+  --c-paper:   #faf7f3;
+  --c-white:   #ffffff;
+  --c-accent:  #c0392b;
+  --c-border:  #e4dbd0;
+
+  --f-display: 'Cormorant Garamond', serif;
+  --f-body:    'DM Sans', sans-serif;
+
+  --gap:       clamp(16px, 3vw, 32px);
+  --max-w:     1320px;
+  --radius:    4px;
+  --shadow:    0 2px 20px rgba(26,16,8,.08);
+  --shadow-lg: 0 8px 48px rgba(26,16,8,.14);
+}
+
+body {
+  font-family: var(--f-body);
+  color: var(--c-dark);
+  background: var(--c-white);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+button { font-family: var(--f-body); cursor: pointer; }
+
+/* ═══════════════════════════════
+   IMAGE COMPONENT (URL input)
+═══════════════════════════════ */
+.img-wrap {
+  position: relative;
+  width: 100%; height: 100%;
+  background: linear-gradient(145deg, #e8ddd2 0%, #d0bfaf 100%);
+  overflow: hidden;
+}
+.img-wrap img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; z-index: 1;
+}
+.img-ph {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; color: rgba(74,46,26,.3); font-size: 11px;
+  letter-spacing: .5px; text-transform: uppercase;
+}
+.img-ph svg { width: 28px; height: 28px; opacity: .5; }
+.img-add-btn {
+  position: absolute; bottom: 10px; right: 10px; z-index: 10;
+  background: rgba(26,16,8,.75); color: #fff; border: none;
+  padding: 5px 12px; font-size: 11px; border-radius: 2px;
+  opacity: 0; transition: opacity .2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.img-wrap:hover .img-add-btn { opacity: 1; }
+.img-overlay {
+  display: none; position: absolute; inset: 0; z-index: 20;
+  background: rgba(26,16,8,.92); backdrop-filter: blur(4px);
+  flex-direction: column; align-items: center;
+  justify-content: center; gap: 10px; padding: 20px;
+}
+.img-overlay.show { display: flex; }
+.img-overlay label { color: var(--c-sand); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; align-self: flex-start; }
+.img-overlay input {
+  width: 100%; padding: 9px 14px; font-size: 13px;
+  border: 1px solid rgba(255,255,255,.2); border-radius: 3px;
+  background: rgba(255,255,255,.08); color: #fff;
+  font-family: var(--f-body); outline: none;
+  transition: border-color .2s;
+}
+.img-overlay input:focus { border-color: var(--c-warm); }
+.img-overlay input::placeholder { color: rgba(255,255,255,.3); }
+.ov-row { display: flex; gap: 8px; }
+.ov-apply {
+  background: var(--c-warm); color: #fff; border: none;
+  padding: 8px 20px; font-size: 12px; border-radius: 3px;
+  font-weight: 500; transition: background .2s;
+}
+.ov-apply:hover { background: var(--c-brown); }
+.ov-cancel {
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.7);
+  border: 1px solid rgba(255,255,255,.2);
+  padding: 8px 14px; font-size: 12px; border-radius: 3px;
+}
+
+/* ═══════════════════════════════
+   LAYOUT HELPERS
+═══════════════════════════════ */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap); }
+.section { padding: clamp(40px, 6vw, 80px) 0; }
+.section-alt { background: var(--c-paper); }
+.row { display: flex; gap: var(--gap); }
+.row.center { align-items: center; }
+
+/* ═══════════════════════════════
+   TOPBAR
+═══════════════════════════════ */
+.topbar {
+  background: var(--c-dark);
+  color: rgba(255,255,255,.8);
+  font-size: 11.5px; letter-spacing: .6px;
+  padding: 8px 0;
+}
+.topbar-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  gap: 12px; flex-wrap: wrap;
+}
+.topbar-center { flex: 1; text-align: center; }
+.topbar span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ═══════════════════════════════
+   HEADER
+═══════════════════════════════ */
+.header {
+  background: var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 1px 12px rgba(26,16,8,.06);
+}
+.header-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  display: flex; align-items: center; gap: clamp(12px, 2vw, 28px);
+  height: clamp(58px, 6vw, 72px);
+}
+.logo {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 600; color: var(--c-dark);
+  letter-spacing: .5px; white-space: nowrap;
+  flex-shrink: 0;
+}
+.logo em { font-style: italic; color: var(--c-brown); }
+
+.searchbar {
+  flex: 1; max-width: 480px;
+  position: relative;
+}
+.searchbar input {
+  width: 100%;
+  border: 1.5px solid var(--c-border); border-radius: 30px;
+  padding: 9px 40px 9px 18px; font-size: 13px;
+  outline: none; font-family: var(--f-body);
+  background: var(--c-paper); color: var(--c-dark);
+  transition: border-color .2s;
+}
+.searchbar input:focus { border-color: var(--c-warm); }
+.searchbar button {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--c-mid); padding: 0;
+  display: flex; align-items: center;
+}
+.searchbar button svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+.header-actions { display: flex; align-items: center; gap: clamp(10px, 1.5vw, 22px); margin-left: auto; }
+.hact {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; font-size: 10px; color: var(--c-mid);
+  cursor: pointer; transition: color .2s; flex-shrink: 0;
+}
+.hact:hover { color: var(--c-brown); }
+.hact svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.hact-cart { position: relative; }
+.cart-dot {
+  position: absolute; top: -4px; right: -6px;
+  width: 16px; height: 16px; background: var(--c-warm);
+  color: #fff; border-radius: 50%; font-size: 9px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ═══════════════════════════════
+   NAV
+═══════════════════════════════ */
+.sitenav { background: var(--c-white); border-bottom: 1px solid var(--c-border); }
+.sitenav-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  display: flex; gap: 0; overflow-x: auto;
+  scrollbar-width: none;
+}
+.sitenav-inner::-webkit-scrollbar { display: none; }
+.sitenav-inner a {
+  padding: 13px clamp(10px, 1.2vw, 18px);
+  font-size: clamp(11px, 1vw, 13px); font-weight: 500;
+  color: var(--c-mid); letter-spacing: .6px; text-transform: uppercase;
+  white-space: nowrap; border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.sitenav-inner a:hover, .sitenav-inner a.on { color: var(--c-brown); border-bottom-color: var(--c-brown); }
+.sitenav-inner a.sale { color: var(--c-accent); }
+
+/* ═══════════════════════════════
+   HERO BANNER — FULL FIX
+═══════════════════════════════ */
+.hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  min-height: 340px;
+  max-height: 580px;
+  background: linear-gradient(110deg, #e8ddd2 0%, #d8c8b8 45%, #c8b8a8 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* Decorative background shapes */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 75% 50%, rgba(176,128,96,.15) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 50% at 20% 80%, rgba(74,46,26,.08) 0%, transparent 60%);
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: var(--max-w); margin: 0 auto; width: 100%; padding: 0 var(--gap);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 100%;
+}
+
+.hero-text { max-width: 42%; flex-shrink: 0; }
+.hero-eyebrow {
+  font-family: var(--f-body); font-size: clamp(10px, .9vw, 13px);
+  letter-spacing: 3px; text-transform: uppercase; color: var(--c-mid);
+  margin-bottom: 10px;
+}
+.hero-h1 {
+  font-family: var(--f-display);
+  font-size: clamp(32px, 4.5vw, 68px);
+  font-weight: 700; color: var(--c-dark); line-height: 1.05;
+  margin-bottom: 8px;
+}
+.hero-h1 em { font-style: italic; color: var(--c-brown); }
+.hero-tagline {
+  font-family: var(--f-display); font-style: italic;
+  font-size: clamp(14px, 1.4vw, 20px);
+  color: var(--c-mid); margin-bottom: clamp(18px, 2.5vw, 32px);
+}
+.hero-sub {
+  font-size: clamp(11px, .9vw, 13px); color: var(--c-mid);
+  margin-top: -8px; margin-bottom: clamp(14px, 2vw, 24px);
+  letter-spacing: .3px;
+}
+
+.btn { display: inline-block; border: none; cursor: pointer; font-family: var(--f-body); }
+.btn-dark {
+  background: var(--c-dark); color: #fff;
+  padding: clamp(9px, 1vw, 13px) clamp(20px, 2vw, 36px);
+  font-size: clamp(10px, .85vw, 12px); font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  transition: background .25s, transform .15s;
+}
+.btn-dark:hover { background: var(--c-brown); transform: translateY(-1px); }
+.btn-outline-dark {
+  background: transparent; color: var(--c-dark);
+  border: 1.5px solid var(--c-dark);
+  padding: clamp(8px, .9vw, 12px) clamp(18px, 1.8vw, 30px);
+  font-size: clamp(10px, .85vw, 12px); font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  transition: all .25s;
+}
+.btn-outline-dark:hover { background: var(--c-dark); color: #fff; }
+
+/* Hero images — right side */
+.hero-images {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  display: flex; align-items: flex-end;
+  width: 48%; pointer-events: none;
+}
+.hero-img-a {
+  width: 44%;
+  height: 82%;
+  margin-bottom: 0;
+  margin-right: -2%;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  box-shadow: -4px 0 24px rgba(26,16,8,.12);
+  pointer-events: all;
+}
+.hero-img-b {
+  width: 56%;
+  height: 96%;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  box-shadow: -6px 0 32px rgba(26,16,8,.16);
+  pointer-events: all;
+}
+
+.hero-dots {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 7px; z-index: 5;
+}
+.hero-dots span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(74,46,26,.25); transition: background .2s;
+}
+.hero-dots span.on { background: var(--c-brown); width: 22px; border-radius: 4px; }
+
+/* ═══════════════════════════════
+   TRUST STRIP
+═══════════════════════════════ */
+.trust-strip { padding: 20px 0; border-bottom: 1px solid var(--c-border); background: var(--c-white); }
+.trust-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--gap);
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+}
+.trust-icon {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: var(--c-cream); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+}
+.trust-label { font-size: 11.5px; line-height: 1.4; }
+.trust-label strong { display: block; font-size: 12px; font-weight: 600; color: var(--c-dark); }
+.trust-label span { color: var(--c-mid); font-size: 11px; }
+
+/* ═══════════════════════════════
+   PROMO BANNER
+═══════════════════════════════ */
+.promo-banner {
+  margin: clamp(20px, 3vw, 40px) 0;
+  background: linear-gradient(to right, var(--c-cream), #e8ddd2);
+  overflow: hidden;
+}
+.promo-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: clamp(140px, 16vw, 200px);
+}
+.promo-text { padding: clamp(20px, 3vw, 40px) 0; }
+.promo-tag {
+  font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--c-warm); margin-bottom: 6px; font-weight: 500;
+}
+.promo-title {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 700; color: var(--c-dark); line-height: 1.05;
+}
+.promo-sub { font-size: clamp(12px, 1vw, 15px); color: var(--c-mid); margin: 8px 0 20px; }
+.promo-img-wrap {
+  width: clamp(160px, 20vw, 260px);
+  height: clamp(140px, 18vw, 220px);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════
+   SECTION HEADER
+═══════════════════════════════ */
+.sec-header {
+  display: flex; justify-content: space-between;
+  align-items: flex-end; margin-bottom: clamp(18px, 2.5vw, 30px);
+}
+.sec-title {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 2.5vw, 34px);
+  font-weight: 600; color: var(--c-dark); line-height: 1.1;
+}
+.sec-sub { font-size: 12px; color: var(--c-mid); margin-top: 4px; }
+.sec-link {
+  font-size: 12px; color: var(--c-brown);
+  text-decoration: underline; text-underline-offset: 3px;
+  font-weight: 500; transition: opacity .2s; flex-shrink: 0;
+}
+.sec-link:hover { opacity: .7; }
+
+/* ═══════════════════════════════
+   PRODUCT GRID
+═══════════════════════════════ */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(12px, 2vw, 20px);
+}
+@media (max-width: 1100px) { .product-grid { grid-template-columns: repeat(4,1fr); } }
+@media (max-width: 860px)  { .product-grid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 600px)  { .product-grid { grid-template-columns: repeat(2,1fr); } }
+
+.product-card { cursor: pointer; }
+.prod-img {
+  aspect-ratio: 3/4;
+  overflow: hidden; position: relative;
+  border-radius: var(--radius); margin-bottom: 10px;
+}
+.prod-img .img-wrap { transition: transform .4s ease; }
+.product-card:hover .prod-img .img-wrap { transform: scale(1.04); }
+.prod-wish {
+  position: absolute; top: 8px; right: 8px; z-index: 5;
+  width: 30px; height: 30px; background: rgba(255,255,255,.85);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 14px; cursor: pointer;
+  transition: background .2s;
+}
+.prod-wish:hover { background: var(--c-white); }
+.prod-name { font-size: 13px; color: var(--c-dark); margin-bottom: 4px; line-height: 1.4; font-weight: 400; }
+.prod-price { font-family: var(--f-display); font-size: 15px; font-weight: 600; color: var(--c-brown); margin-bottom: 4px; }
+.prod-stars { color: #c8922a; font-size: 11px; }
+.prod-rev { font-size: 11px; color: var(--c-mid); margin-left: 4px; }
+
+/* ═══════════════════════════════
+   TABS
+═══════════════════════════════ */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--c-border); margin-bottom: clamp(16px, 2vw, 24px); }
+.tab {
+  padding: 10px clamp(14px, 1.5vw, 22px);
+  font-size: 13px; font-weight: 500; color: var(--c-mid);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all .2s; white-space: nowrap;
+}
+.tab.on { color: var(--c-white); background: var(--c-dark); border-color: var(--c-dark); }
+.tab:not(.on):hover { color: var(--c-brown); border-bottom-color: var(--c-sand); }
+
+/* ═══════════════════════════════
+   MIX & MATCH GRID
+═══════════════════════════════ */
+.mix-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: clamp(12px, 2vw, 20px);
+}
+@media (max-width: 800px) { .mix-grid { grid-template-columns: repeat(2,1fr); } }
+
+.mix-card { cursor: pointer; }
+.mix-img { aspect-ratio: 3/4; overflow: hidden; border-radius: var(--radius); margin-bottom: 8px; }
+.mix-img .img-wrap { transition: transform .4s; }
+.mix-card:hover .mix-img .img-wrap { transform: scale(1.04); }
+.mix-label { font-size: 13px; text-align: center; color: var(--c-dark); font-weight: 500; }
+.mix-sub { font-size: 11px; text-align: center; color: var(--c-mid); }
+
+/* ═══════════════════════════════
+   NEW IN — split layout
+═══════════════════════════════ */
+.newin-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: clamp(20px, 3vw, 48px);
+  align-items: start;
+}
+@media (max-width: 860px) { .newin-layout { grid-template-columns: 1fr; } }
+
+.newin-left { position: relative; }
+.newin-big {
+  aspect-ratio: 4/5;
+  overflow: hidden; border-radius: var(--radius);
+}
+.newin-badge {
+  position: absolute; bottom: 20px; left: 20px;
+  background: rgba(250,247,243,.95); backdrop-filter: blur(8px);
+  padding: 20px 24px; max-width: 220px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(26,16,8,.12);
+}
+.newin-badge .badge-tag { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--c-warm); margin-bottom: 4px; font-weight: 600; }
+.newin-badge h3 { font-family: var(--f-display); font-size: 20px; font-weight: 600; color: var(--c-dark); margin-bottom: 4px; }
+.newin-badge p { font-size: 11.5px; color: var(--c-mid); margin-bottom: 14px; line-height: 1.5; }
+
+.newin-list { display: flex; flex-direction: column; }
+.newin-item {
+  display: flex; gap: 14px; align-items: center;
+  padding: 14px 0; border-bottom: 1px solid var(--c-border);
+  transition: background .2s;
+}
+.newin-item:last-child { border-bottom: none; }
+.newin-item:hover { background: var(--c-paper); margin: 0 -12px; padding: 14px 12px; border-radius: var(--radius); }
+.newin-thumb { width: 70px; height: 88px; flex-shrink: 0; overflow: hidden; border-radius: var(--radius); }
+.newin-info { flex: 1; }
+.newin-name { font-size: 13px; color: var(--c-dark); margin-bottom: 4px; font-weight: 400; line-height: 1.4; }
+.newin-price { font-family: var(--f-display); font-size: 15px; font-weight: 600; color: var(--c-brown); }
+.newin-wish { color: var(--c-mid); font-size: 16px; cursor: pointer; flex-shrink: 0; }
+
+/* ═══════════════════════════════
+   DISCOUNT BANNER
+═══════════════════════════════ */
+.discount-banner {
+  background: var(--c-dark);
+  color: rgba(255,255,255,.9);
+  padding: clamp(32px, 5vw, 56px) 0;
+  position: relative; overflow: hidden;
+}
+.discount-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 50% 100% at 80% 50%, rgba(176,128,96,.15) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 60% at 10% 80%, rgba(176,128,96,.08) 0%, transparent 50%);
+}
+.disc-inner {
+  position: relative; z-index: 1;
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: var(--gap); flex-wrap: wrap;
+}
+.disc-text { flex: 1; min-width: 240px; }
+.disc-eyebrow { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--c-sand); margin-bottom: 8px; opacity: .8; }
+.disc-title { font-family: var(--f-display); font-size: clamp(28px, 3.5vw, 48px); font-weight: 700; margin-bottom: 6px; }
+.disc-sub { font-size: 13px; opacity: .7; margin-bottom: 20px; }
+.btn-light {
+  display: inline-block; border: 1.5px solid rgba(255,255,255,.5);
+  color: rgba(255,255,255,.9); background: transparent;
+  padding: 10px 28px; font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  transition: all .25s;
+}
+.btn-light:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.8); }
+.disc-tiers { display: flex; gap: clamp(10px, 1.5vw, 18px); flex-shrink: 0; flex-wrap: wrap; }
+.disc-tier {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.15);
+  padding: clamp(14px, 1.5vw, 22px) clamp(18px, 2vw, 30px);
+  border-radius: var(--radius); text-align: center; min-width: 110px;
+}
+.disc-tier-icon { font-size: 20px; margin-bottom: 6px; }
+.disc-tier-amt { font-family: var(--f-display); font-size: clamp(16px, 1.8vw, 22px); font-weight: 700; }
+.disc-tier-cond { font-size: 11px; opacity: .6; margin-top: 3px; }
+
+/* ═══════════════════════════════
+   UGC GRID
+═══════════════════════════════ */
+.ugc-title { font-family: var(--f-display); font-size: clamp(24px, 3vw, 38px); text-align: center; margin-bottom: 6px; }
+.ugc-sub { text-align: center; font-size: 13px; color: var(--c-mid); margin-bottom: clamp(20px, 3vw, 36px); }
+.ugc-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: auto auto;
+  gap: clamp(6px, 1vw, 10px);
+}
+@media (max-width: 900px) { .ugc-grid { grid-template-columns: repeat(4,1fr); } }
+@media (max-width: 600px) { .ugc-grid { grid-template-columns: repeat(3,1fr); } }
+
+.ugc-cell { overflow: hidden; border-radius: var(--radius); cursor: pointer; }
+.ugc-cell .img-wrap { transition: transform .4s; }
+.ugc-cell:hover .img-wrap { transform: scale(1.05); }
+.ugc-cell-big { grid-column: span 2; grid-row: span 2; }
+.ugc-cell:not(.ugc-cell-big) { aspect-ratio: 1; }
+.ugc-cell-big { aspect-ratio: 1; }
+
+/* ═══════════════════════════════
+   WHY US
+═══════════════════════════════ */
+.whyus-title { font-family: var(--f-display); font-size: clamp(22px, 2.5vw, 32px); text-align: center; margin-bottom: clamp(24px, 3vw, 40px); }
+.whyus-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: clamp(16px, 2.5vw, 36px);
+}
+@media (max-width: 800px) { .whyus-grid { grid-template-columns: repeat(2,1fr); } }
+
+.wy-item { display: flex; gap: 14px; align-items: flex-start; }
+.wy-icon {
+  width: 46px; height: 46px; flex-shrink: 0;
+  background: var(--c-cream); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.wy-text strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.wy-text p { font-size: 12px; color: var(--c-mid); line-height: 1.6; }
+
+/* ═══════════════════════════════
+   NEWSLETTER
+═══════════════════════════════ */
+.newsletter {
+  background: linear-gradient(120deg, var(--c-dark) 55%, #2a1a0e 100%);
+  color: rgba(255,255,255,.9); padding: clamp(40px, 6vw, 72px) 0;
+  position: relative; overflow: hidden;
+}
+.newsletter::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 40% 80% at 85% 50%, rgba(176,128,96,.2) 0%, transparent 60%);
+}
+.nwsl-inner {
+  position: relative; z-index: 1;
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap);
+  display: flex; gap: clamp(30px, 5vw, 80px); align-items: center;
+  flex-wrap: wrap;
+}
+.nwsl-text { flex: 1; min-width: 240px; }
+.nwsl-tag { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--c-warm); margin-bottom: 8px; }
+.nwsl-text h2 { font-family: var(--f-display); font-size: clamp(24px, 3vw, 40px); font-weight: 600; margin-bottom: 8px; }
+.nwsl-text p { font-size: 13px; opacity: .7; line-height: 1.6; }
+.nwsl-form { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 10px; }
+.nwsl-form input {
+  padding: 13px 18px; border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.07); color: #fff; border-radius: 3px;
+  font-size: 13px; font-family: var(--f-body); outline: none;
+  transition: border-color .2s;
+}
+.nwsl-form input:focus { border-color: var(--c-warm); }
+.nwsl-form input::placeholder { color: rgba(255,255,255,.35); }
+.nwsl-form button {
+  background: var(--c-warm); color: #fff; border: none;
+  padding: 13px; font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase; border-radius: 3px;
+  transition: background .25s;
+}
+.nwsl-form button:hover { background: var(--c-brown); }
+.nwsl-img {
+  width: clamp(160px, 18vw, 240px);
+  height: clamp(180px, 22vw, 280px);
+  flex-shrink: 0; overflow: hidden; border-radius: var(--radius);
+  opacity: .85;
+}
+
+/* ═══════════════════════════════
+   FOOTER
+═══════════════════════════════ */
+.footer { background: #100804; color: rgba(255,255,255,.75); padding: clamp(36px, 5vw, 60px) 0 20px; }
+.footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gap); }
+.footer-grid {
+  display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: clamp(24px, 4vw, 56px); margin-bottom: clamp(28px, 4vw, 48px);
+}
+@media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+
+.f-brand .logo { color: #fff; font-size: 26px; margin-bottom: 12px; display: inline-block; }
+.f-brand p { font-size: 12px; line-height: 1.8; opacity: .6; margin-bottom: 18px; max-width: 260px; }
+.socials { display: flex; gap: 10px; }
+.social-btn {
+  width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; cursor: pointer; transition: border-color .2s, background .2s;
+}
+.social-btn:hover { border-color: var(--c-warm); background: rgba(176,128,96,.15); }
+.f-col h4 { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; color: rgba(255,255,255,.5); }
+.f-col ul li { margin-bottom: 10px; }
+.f-col ul li a { font-size: 12.5px; opacity: .65; transition: opacity .2s; }
+.f-col ul li a:hover { opacity: 1; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.08); padding-top: 18px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; opacity: .4; flex-wrap: wrap; gap: 10px;
+}
+.pay-row { display: flex; gap: 7px; align-items: center; }
+.pay-badge { background: rgba(255,255,255,.1); border-radius: 3px; padding: 3px 8px; font-size: 10px; font-weight: 700; }
+
+/* ═══════════════════════════════
+   RESPONSIVE — trust strip
+═══════════════════════════════ */
+@media (max-width: 1000px) { .trust-inner { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 640px)  { .trust-inner { grid-template-columns: repeat(2,1fr); } }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>📦 FREESHIP đơn từ 499K</span>
+    <span class="topbar-center">⏰ Đổi trả 7 ngày — miễn phí</span>
+    <span>✅ Kiểm tra hàng trước khi nhận</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">Jus<em>Dun</em></div>
+    <div class="searchbar">
+      <input type="text" placeholder="Tìm kiếm sản phẩm...">
+      <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+    </div>
+    <div class="header-actions">
+      <div class="hact">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Tài khoản</span>
+      </div>
+      <div class="hact hact-cart">
+        <span class="cart-dot">0</span>
+        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span>Giỏ hàng</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="sitenav">
+  <div class="sitenav-inner">
+    <a href="#">Trang chủ</a>
+    <a href="#">Sản phẩm</a>
+    <a href="#">Áo</a>
+    <a href="#">Quần</a>
+    <a href="#">Váy</a>
+    <a href="#">Set đồ</a>
+    <a href="#">New in</a>
+    <a href="#" class="on">Best seller</a>
+    <a href="#" class="sale">Sale</a>
+    <a href="#">Blog</a>
+  </div>
+</nav>
+
+<!-- HERO BANNER -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Bộ sưu tập mới nhất</div>
+      <h1 class="hero-h1">BASIC<br>BUT <em>BEAUTIFUL</em></h1>
+      <p class="hero-sub">Dễ mặc · Dễ phối · Tôn dáng</p>
+      <div class="hero-tagline">Thanh lịch mỗi ngày</div>
+      <a href="#" class="btn btn-dark">SHOP NOW</a>
+    </div>
+  </div>
+  <div class="hero-images">
+    <div class="hero-img-a">
+      <div class="img-wrap" style="height:100%">
+        <div class="img-ph"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Model 1</div>
+        <button class="img-add-btn" onclick="openOv(this)">🖼 Thêm ảnh</button>
+        <div class="img-overlay"><label>Đường dẫn ảnh (URL)</label><input type="text" placeholder="https://example.com/anh.jpg"><div class="ov-row"><button class="ov-apply" onclick="applyOv(this)">Áp dụng</button><button class="ov-cancel" onclick="closeOv(this)">Huỷ</button></div></div>
+      </div>
+    </div>
+    <div class="hero-img-b">
+      <div class="img-wrap" style="height:100%">
+        <div class="img-ph"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Model 2</div>
+        <button class="img-add-btn" onclick="openOv(this)">🖼 Thêm ảnh</button>
+        <div class="img-overlay"><label>Đường dẫn ảnh (URL)</label><input type="text" placeholder="https://example.com/anh.jpg"><div class="ov-row"><button class="ov-apply" onclick="applyOv(this)">Áp dụng</button><button class="ov-cancel" onclick="closeOv(this)">Huỷ</button></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-dots">
+    <span class="on"></span><span></span><span></span>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item"><div class="trust-icon">⬛</div><div class="trust-label"><strong>Co giãn 4 chiều</strong><span>Thoải mái vận động</span></div></div>
+    <div class="trust-item"><div class="trust-icon">✨</div><div class="trust-label"><strong>Chất liệu mềm mịn</strong><span>Thấm hút mồ hôi tốt</span></div></div>
+    <div class="trust-item"><div class="trust-icon">👗</div><div class="trust-label"><strong>Tôn dáng</strong><span>Thiết kế tinh tế</span></div></div>
+    <div class="trust-item"><div class="trust-icon">🎨</div><div class="trust-label"><strong>Dễ phối đồ</strong><span>Phù hợp nhiều phong cách</span></div></div>
+    <div class="trust-item"><div class="trust-icon">🔄</div><div class="trust-label"><strong>Đổi trả 7 ngày</strong><span>Miễn phí đổi sản phẩm</span></div></div>
+  </div>
+</div>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div class="promo-inner">
+    <div class="promo-text">
+      <div class="promo-tag">Ưu đãi chào mừng</div>
+      <div class="promo-title">GIẢM NGAY 10%</div>
+      <div class="promo-sub">Cho đơn hàng đầu tiên của bạn</div>
+      <a href="#" class="btn btn-dark">NHẬN MÃ NGAY</a>
+    </div>
+    <div class="promo-img-wrap">
+      <div class="img-wrap" style="height:100%">
+        <div class="img-ph"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Ảnh promo</div>
+        <button class="img-add-btn" onclick="openOv(this)">🖼 Thêm ảnh</button>
+        <div class="img-overlay"><label>URL ảnh</label><input type="text" placeholder="https://..."><div class="ov-row"><button class="ov-apply" onclick="applyOv(this)">Áp dụng</button><button class="ov-cancel" onclick="closeOv(this)">Huỷ</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BEST SELLER -->
+<section class="section">
+  <div class="container">
+    <div class="sec-header">
+      <div><div class="sec-title">Best Seller</div><div class="sec-sub">Sản phẩm bán chạy nhất tuần</div></div>
+      <a href="#" class="sec-link">Xem tất cả →</a>
+    </div>
+    <div class="product-grid" id="bsGrid"></div>
+  </div>
+</section>
+
+<!-- MIX & MATCH -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="sec-header">
+      <div><div class="sec-title">Mix &amp; Match</div><div class="sec-sub">Gợi ý phối đồ cho nàng</div></div>
+    </div>
+    <div class="tabs" id="mixTabs">
+      <div class="tab on">Đi làm</div>
+      <div class="tab">Đi chơi</div>
+      <div class="tab">Dạo phố</div>
+      <div class="tab">Cafe cuối tuần</div>
+    </div>
+    <div class="mix-grid" id="mixGrid"></div>
+  </div>
+</section>
+
+<!-- NEW IN -->
+<section class="section">
+  <div class="container">
+    <div class="sec-header">
+      <div><div class="sec-title">New In</div><div class="sec-sub">Bộ sưu tập mới nhất</div></div>
+      <a href="#" class="sec-link">Khám phá ngay →</a>
+    </div>
+    <div class="newin-layout">
+      <div class="newin-left">
+        <div class="newin-big">
+          <div class="img-wrap" style="height:100%">
+            <div class="img-ph"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Ảnh lớn</div>
+            <button class="img-add-btn" onclick="openOv(this)">🖼 Thêm ảnh</button>
+            <div class="img-overlay"><label>URL ảnh</label><input type="text" placeholder="https://..."><div class="ov-row"><button class="ov-apply" onclick="applyOv(this)">Áp dụng</button><button class="ov-cancel" onclick="closeOv(this)">Huỷ</button></div></div>
+          </div>
+        </div>
+        <div class="newin-badge">
+          <div class="badge-tag">New in</div>
+          <h3>Bộ sưu tập mới</h3>
+          <p>Cập nhật xu hướng thời trang mới nhất</p>
+          <a href="#" class="btn btn-dark" style="font-size:10px;padding:8px 18px">KHÁM PHÁ</a>
+        </div>
+      </div>
+      <div class="newin-right">
+        <div class="newin-list" id="niList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOUNT -->
+<div class="discount-banner">
+  <div class="disc-inner">
+    <div class="disc-text">
+      <div class="disc-eyebrow">Mua nhiều — ưu đãi nhiều</div>
+      <div class="disc-title">GIẢM ĐẾN 20%</div>
+      <div class="disc-sub">Áp dụng cho đơn hàng từ 299K trở lên</div>
+      <a href="#" class="btn-light">XEM NGAY</a>
+    </div>
+    <div class="disc-tiers">
+      <div class="disc-tier"><div class="disc-tier-icon">🏷️</div><div class="disc-tier-amt">−10K</div><div class="disc-tier-cond">Đơn từ 299K</div></div>
+      <div class="disc-tier"><div class="disc-tier-icon">🏷️</div><div class="disc-tier-amt">−20K</div><div class="disc-tier-cond">Đơn từ 499K</div></div>
+      <div class="disc-tier"><div class="disc-tier-icon">🏷️</div><div class="disc-tier-amt">−50K</div><div class="disc-tier-cond">Đơn từ 799K</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- UGC / JUSDUN GIRL -->
+<section class="section">
+  <div class="container">
+    <div class="ugc-title">#JusDun Girl</div>
+    <div class="ugc-sub">Cảm ơn các nàng đã luôn đồng hành cùng JusDun ❤</div>
+    <div class="ugc-grid" id="ugcGrid"></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="whyus-title">Vì sao nên chọn JusDun?</div>
+    <div class="whyus-grid">
+      <div class="wy-item"><div class="wy-icon">⭐</div><div class="wy-text"><strong>Chất lượng đảm bảo</strong><p>Mỗi sản phẩm được kiểm tra kỹ lưỡng trước khi giao đến tay bạn.</p></div></div>
+      <div class="wy-item"><div class="wy-icon">💰</div><div class="wy-text"><strong>Giá cả hợp lý</strong><p>Chất lượng cao, giá phải chăng — phù hợp mọi đối tượng.</p></div></div>
+      <div class="wy-item"><div class="wy-icon">💬</div><div class="wy-text"><strong>Tư vấn nhiệt tình</strong><p>Đội ngũ hỗ trợ 24/7, sẵn sàng giúp bạn chọn đúng sản phẩm.</p></div></div>
+      <div class="wy-item"><div class="wy-icon">🚚</div><div class="wy-text"><strong>Giao hàng nhanh</strong><p>Giao toàn quốc, nhanh chóng và đáng tin cậy.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="nwsl-inner">
+    <div class="nwsl-text">
+      <div class="nwsl-tag">Đăng ký nhận ưu đãi</div>
+      <h2>Luôn cập nhật<br><em style="font-family:var(--f-display);font-style:italic">xu hướng mới nhất</em></h2>
+      <p style="margin-top:12px">Nhận ngay thông tin sản phẩm mới và ưu đãi độc quyền dành riêng cho thành viên.</p>
+    </div>
+    <div class="nwsl-form">
+      <input type="email" placeholder="Nhập địa chỉ email của bạn...">
+      <button>ĐĂNG KÝ NGAY</button>
+    </div>
+    <div class="nwsl-img">
+      <div class="img-wrap" style="height:100%">
+        <div class="img-ph" style="color:rgba(255,255,255,.3)"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Ảnh</div>
+        <button class="img-add-btn" onclick="openOv(this)">🖼 Thêm ảnh</button>
+        <div class="img-overlay"><label>URL ảnh</label><input type="text" placeholder="https://..."><div class="ov-row"><button class="ov-apply" onclick="applyOv(this)">Áp dụng</button><button class="ov-cancel" onclick="closeOv(this)">Huỷ</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <div class="logo">Jus<em>Dun</em></div>
+        <p>Thời trang nữ tối giản, tinh tế. Dễ mặc, dễ phối — phong cách đơn giản nhưng luôn nổi bật.</p>
+        <div class="socials">
+          <div class="social-btn">f</div>
+          <div class="social-btn">ig</div>
+          <div class="social-btn">tt</div>
+        </div>
+      </div>
+      <div class="f-col"><h4>Về JusDun</h4><ul><li><a href="#">Giới thiệu</a></li><li><a href="#">Blog thời trang</a></li><li><a href="#">Tuyển dụng</a></li><li><a href="#">Liên hệ</a></li></ul></div>
+      <div class="f-col"><h4>Chính sách</h4><ul><li><a href="#">Đổi trả hàng</a></li><li><a href="#">Bảo mật thông tin</a></li><li><a href="#">Điều khoản sử dụng</a></li></ul></div>
+      <div class="f-col"><h4>Hỗ trợ</h4><ul><li><a href="#">Hướng dẫn chọn size</a></li><li><a href="#">Câu hỏi thường gặp</a></li><li><a href="#">Tra cứu đơn hàng</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 JusDun. All rights reserved.</span>
+      <div class="pay-row"><span>Thanh toán:</span><div class="pay-badge">VISA</div><div class="pay-badge">MC</div><div class="pay-badge">ATM</div><div class="pay-badge">COD</div><div class="pay-badge">QR</div></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── DATA ── */
+const prods = [
+  {id:'p1', name:'Áo thun lệch vai tay ngắn', price:'199.000đ', stars:5, rev:120},
+  {id:'p2', name:'Áo thun basic cổ tròn',     price:'149.000đ', stars:4, rev:98 },
+  {id:'p3', name:'Áo thun ôm tay dài',        price:'179.000đ', stars:4, rev:76 },
+  {id:'p4', name:'Áo trễ vai dài tay',        price:'189.000đ', stars:4, rev:84 },
+  {id:'p5', name:'Áo hai dây basic',          price:'129.000đ', stars:4, rev:54 },
+];
+const mixes = [
+  {id:'m1', label:'Thanh lịch', sub:'Nữ tính — Công sở'},
+  {id:'m2', label:'Trẻ trung',  sub:'Năng động — Dễ thương'},
+  {id:'m3', label:'Tối giản',   sub:'Hiện đại — Tinh tế'},
+  {id:'m4', label:'Basic',      sub:'Dễ ứng dụng hàng ngày'},
+];
+const newins = [
+  {id:'n1', name:'Áo sơ mi basic dáng rộng',  price:'199.000đ'},
+  {id:'n2', name:'Áo croptop tay ngắn',        price:'159.000đ'},
+  {id:'n3', name:'Áo hai dây lụa mềm',         price:'129.000đ'},
+  {id:'n4', name:'Áo len cổ lọ mỏng',          price:'219.000đ'},
+];
+
+const starStr = n => '<span style="color:#c8922a">' + '★'.repeat(n) + '</span><span style="color:#ddd">' + '★'.repeat(5-n) + '</span>';
+
+/* ── IMG BOX HELPER ── */
+function imgBox(id, h, label = 'Ảnh') {
+  return `<div class="img-wrap" style="height:${h}" data-id="${id}">
+    <div class="img-ph">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      ${label}
+    </div>
+    <button class="img-add-btn" onclick="openOv(this)">🖼 Thêm ảnh</button>
+    <div class="img-overlay">
+      <label>Đường dẫn ảnh (URL)</label>
+      <input type="text" placeholder="https://example.com/anh.jpg">
+      <div class="ov-row">
+        <button class="ov-apply" onclick="applyOv(this)">Áp dụng</button>
+        <button class="ov-cancel" onclick="closeOv(this)">Huỷ</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── RENDER ── */
+document.getElementById('bsGrid').innerHTML = prods.map(p => `
+  <div class="product-card">
+    <div class="prod-img">${imgBox(p.id,'100%',p.name)}<div class="prod-wish">♡</div></div>
+    <div class="prod-name">${p.name}</div>
+    <div class="prod-price">${p.price}</div>
+    <div class="prod-stars">${starStr(p.stars)} <span class="prod-rev">(${p.rev})</span></div>
+  </div>`).join('');
+
+document.getElementById('mixGrid').innerHTML = mixes.map(m => `
+  <div class="mix-card">
+    <div class="mix-img">${imgBox(m.id,'100%',m.label)}</div>
+    <div class="mix-label">${m.label}</div>
+    <div class="mix-sub">${m.sub}</div>
+  </div>`).join('');
+
+document.getElementById('niList').innerHTML = newins.map(n => `
+  <div class="newin-item">
+    <div class="newin-thumb">${imgBox(n.id,'88px',n.name)}</div>
+    <div class="newin-info">
+      <div class="newin-name">${n.name}</div>
+      <div class="newin-price">${n.price}</div>
+    </div>
+    <div class="newin-wish">♡</div>
+  </div>`).join('');
+
+document.getElementById('ugcGrid').innerHTML = Array.from({length:8},(_,i) => `
+  <div class="ugc-cell${i===0?' ugc-cell-big':''}">${imgBox('ugc'+(i+1),'100%','')}</div>`).join('');
+
+/* ── IMAGE OVERLAY ── */
+function openOv(btn) {
+  const box = btn.closest('.img-wrap');
+  box.querySelector('.img-overlay').classList.add('show');
+  box.querySelector('input').focus();
+}
+function closeOv(btn) {
+  btn.closest('.img-overlay').classList.remove('show');
+}
+function applyOv(btn) {
+  const ov  = btn.closest('.img-overlay');
+  const box = ov.closest('.img-wrap');
+  const url = ov.querySelector('input').value.trim();
+  if (!url) { closeOv(btn); return; }
+  const ph = box.querySelector('.img-ph'); if (ph) ph.remove();
+  let img = box.querySelector('img');
+  if (!img) {
+    img = document.createElement('img');
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1';
+    box.insertBefore(img, box.firstChild);
+  }
+  img.src = url;
+  ov.querySelector('input').value = '';
+  ov.classList.remove('show');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape')
+    document.querySelectorAll('.img-overlay.show').forEach(o => o.classList.remove('show'));
+});
+
+/* ── TABS ── */
+document.getElementById('mixTabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('tab')) return;
+  document.querySelectorAll('#mixTabs .tab').forEach(t => t.classList.remove('on'));
+  e.target.classList.add('on');
+});
+</script>
+</body>
+</html>

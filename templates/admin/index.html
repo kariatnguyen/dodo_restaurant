@@ -1,0 +1,477 @@
+{% extends "admin/include.html" %}
+{% block content %}
+
+  <!-- TOP -->
+  <div class="top-section">
+
+    <div>
+
+      <div class="page-title">
+        Báo cáo doanh thu
+      </div>
+
+      <div class="page-subtitle">
+        Tổng quan hoạt động nhà hàng hôm nay
+      </div>
+
+    </div>
+
+    <button class="export-btn" id="exportBtn">
+      Xuất Word
+    </button>
+
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-label">Tổng doanh thu</div>
+      <div class="stat-value">24.580.000đ</div>
+      <div class="stat-growth">+12.4%</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Tổng đơn hàng</div>
+      <div class="stat-value">482</div>
+      <div class="stat-growth">+8.1%</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Khách hàng</div>
+      <div class="stat-value">391</div>
+      <div class="stat-growth">+5.6%</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Món bán ra</div>
+      <div class="stat-value">1.248</div>
+      <div class="stat-growth">+18.9%</div>
+    </div>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content-grid">
+
+    <!-- CHART -->
+    <div class="chart-card">
+
+      <div class="card-title">
+        Doanh thu 7 ngày gần đây
+      </div>
+
+      <div class="chart">
+
+        <div class="bar-item">
+          <div class="bar" style="height:180px;">
+            <div class="bar-value">3.2tr</div>
+          </div>
+          <div class="bar-label">T2</div>
+        </div>
+
+        <div class="bar-item">
+          <div class="bar" style="height:220px;">
+            <div class="bar-value">4.1tr</div>
+          </div>
+          <div class="bar-label">T3</div>
+        </div>
+
+        <div class="bar-item">
+          <div class="bar" style="height:170px;">
+            <div class="bar-value">2.8tr</div>
+          </div>
+          <div class="bar-label">T4</div>
+        </div>
+
+        <div class="bar-item">
+          <div class="bar" style="height:280px;">
+            <div class="bar-value">5.2tr</div>
+          </div>
+          <div class="bar-label">T5</div>
+        </div>
+
+        <div class="bar-item">
+          <div class="bar" style="height:250px;">
+            <div class="bar-value">4.8tr</div>
+          </div>
+          <div class="bar-label">T6</div>
+        </div>
+
+        <div class="bar-item">
+          <div class="bar" style="height:310px;">
+            <div class="bar-value">6.1tr</div>
+          </div>
+          <div class="bar-label">T7</div>
+        </div>
+
+        <div class="bar-item">
+          <div class="bar" style="height:260px;">
+            <div class="bar-value">5.0tr</div>
+          </div>
+          <div class="bar-label">CN</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-column">
+
+      <div class="food-card">
+
+        <div class="card-title">
+          Món bán chạy
+        </div>
+
+        <div class="food-list">
+
+          <div class="food-item">
+
+            <div class="food-left">
+
+              <div class="food-rank">#1</div>
+
+              <div>
+                <div class="food-name">
+                  Phở Bò DoDo
+                </div>
+
+                <div class="food-orders">
+                  182 lượt bán
+                </div>
+              </div>
+
+            </div>
+
+            <div class="food-total">
+              11.8tr
+            </div>
+
+          </div>
+
+          <div class="food-item">
+
+            <div class="food-left">
+
+              <div class="food-rank">#2</div>
+
+              <div>
+                <div class="food-name">
+                  Bún Chả Hà Nội
+                </div>
+
+                <div class="food-orders">
+                  144 lượt bán
+                </div>
+              </div>
+
+            </div>
+
+            <div class="food-total">
+              8.2tr
+            </div>
+
+          </div>
+
+          <div class="food-item">
+
+            <div class="food-left">
+
+              <div class="food-rank">#3</div>
+
+              <div>
+                <div class="food-name">
+                  Trà Đào Cam Sả
+                </div>
+
+                <div class="food-orders">
+                  132 lượt bán
+                </div>
+              </div>
+
+            </div>
+
+            <div class="food-total">
+              4.6tr
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="food-card">
+
+        <div class="card-title">
+          Tổng kết hôm nay
+        </div>
+
+        <div class="summary-list">
+
+          <div class="summary-item">
+            <span>Bàn hoạt động</span>
+            <strong>18/20</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>Đơn hoàn thành</span>
+            <strong>452</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>Đơn huỷ</span>
+            <strong>12</strong>
+          </div>
+
+          <div class="summary-item">
+            <span>Thời gian phục vụ TB</span>
+            <strong>18 phút</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+
+    <div class="card-title">
+      Lịch sử thanh toán
+    </div>
+
+    <table class="table">
+
+      <thead>
+
+        <tr>
+          <th>Mã đơn</th>
+          <th>Bàn</th>
+          <th>Tổng tiền</th>
+          <th>Thanh toán</th>
+          <th>Trạng thái</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+          <td>#DD92831</td>
+          <td>Bàn 2</td>
+          <td>245.000đ</td>
+          <td>QR Banking</td>
+          <td>
+            <span class="status success">
+              Thành công
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>#DD92832</td>
+          <td>Bàn 5</td>
+          <td>580.000đ</td>
+          <td>Tiền mặt</td>
+          <td>
+            <span class="status success">
+              Thành công
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>#DD92833</td>
+          <td>Bàn 1</td>
+          <td>320.000đ</td>
+          <td>QR Banking</td>
+          <td>
+            <span class="status pending">
+              Đang xử lý
+            </span>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+
+<script>
+
+/* EXPORT WORD */
+document.getElementById("exportBtn")
+.addEventListener("click", () => {
+
+  const content = `
+
+  <!DOCTYPE html>
+
+  <html>
+
+  <head>
+
+    <meta charset="utf-8">
+
+    <style>
+
+      body{
+        font-family:Arial;
+        padding:40px;
+        color:#111827;
+      }
+
+      h1{
+        text-align:center;
+        color:#f97316;
+        margin-bottom:10px;
+      }
+
+      .sub{
+        text-align:center;
+        color:#6b7280;
+        margin-bottom:40px;
+      }
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:20px;
+      }
+
+      th{
+        background:#f97316;
+        color:white;
+        padding:12px;
+        border:1px solid #ddd;
+      }
+
+      td{
+        border:1px solid #ddd;
+        padding:12px;
+      }
+
+      .section{
+        margin-top:40px;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <h1>
+      BÁO CÁO DOANH THU DODO
+    </h1>
+
+    <div class="sub">
+      Ngày xuất:
+      ${new Date().toLocaleDateString("vi-VN")}
+    </div>
+
+    <h2>
+      Thống kê tổng quan
+    </h2>
+
+    <table>
+
+      <tr>
+        <th>Danh mục</th>
+        <th>Giá trị</th>
+      </tr>
+
+      <tr>
+        <td>Tổng doanh thu</td>
+        <td>24.580.000đ</td>
+      </tr>
+
+      <tr>
+        <td>Tổng đơn hàng</td>
+        <td>482</td>
+      </tr>
+
+      <tr>
+        <td>Khách hàng</td>
+        <td>391</td>
+      </tr>
+
+      <tr>
+        <td>Món bán ra</td>
+        <td>1.248</td>
+      </tr>
+
+    </table>
+
+    <div class="section">
+
+      <h2>
+        Lịch sử thanh toán
+      </h2>
+
+      <table>
+
+        <tr>
+
+          <th>Mã đơn</th>
+          <th>Bàn</th>
+          <th>Tổng tiền</th>
+          <th>Thanh toán</th>
+          <th>Trạng thái</th>
+
+        </tr>
+
+        <tr>
+          <td>#DD92831</td>
+          <td>Bàn 2</td>
+          <td>245.000đ</td>
+          <td>QR Banking</td>
+          <td>Thành công</td>
+        </tr>
+
+        <tr>
+          <td>#DD92832</td>
+          <td>Bàn 5</td>
+          <td>580.000đ</td>
+          <td>Tiền mặt</td>
+          <td>Thành công</td>
+        </tr>
+
+        <tr>
+          <td>#DD92833</td>
+          <td>Bàn 1</td>
+          <td>320.000đ</td>
+          <td>QR Banking</td>
+          <td>Đang xử lý</td>
+        </tr>
+
+      </table>
+
+    </div>
+
+  </body>
+
+  </html>
+
+  `;
+
+  const converted = window.htmlDocx.asBlob(content);
+
+  saveAs(
+    converted,
+    "Bao-cao-DoDo.docx"
+  );
+
+});
+
+</script>
+{% endblock %}

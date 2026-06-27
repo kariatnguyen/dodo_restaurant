@@ -1,0 +1,588 @@
+{% extends "admin/include.html" %}
+{% block content_css %}
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f3f4f6;
+  color:#111827;
+}
+
+/* HEADER */
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+}
+
+.logout{
+  color:#6b7280;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* WRAPPER */
+.wrapper{
+  width:1150px;
+  margin:22px auto;
+}
+
+/* NAV */
+.navbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.nav-btn{
+  height:42px;
+  padding:0 24px;
+  border:none;
+  border-radius:14px;
+  background:transparent;
+  color:#6b7280;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.nav-btn.active{
+  background:#f97316;
+  color:#fff;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border:1px solid #ececec;
+  border-radius:28px;
+  padding:28px;
+  margin-bottom:28px;
+}
+
+/* CARD HEADER */
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:26px;
+}
+
+.card-title{
+  font-size:20px;
+  font-weight:800;
+}
+
+.sync-btn{
+  height:36px;
+  padding:0 18px;
+  border:none;
+  border-radius:999px;
+  background:#fff7ed;
+  color:#f97316;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* ACTIVE TABLE */
+.active-table{
+  width:540px;
+  min-height:98px;
+  border:1px solid #ececec;
+  border-radius:26px;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.table-left{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.table-number{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  background:#fff7ed;
+  color:#ea580c;
+  font-size:20px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.table-info h2{
+  font-size:20px;
+  margin-bottom:6px;
+}
+
+.session{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:22px;
+  padding:0 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  color:#ea580c;
+  font-size:10px;
+  font-weight:700;
+  margin-left:8px;
+}
+
+.start-time{
+  margin-top:8px;
+  color:#9ca3af;
+  font-size:12px;
+  font-weight:700;
+}
+
+.end-btn{
+  height:46px;
+  padding:0 26px;
+  border:none;
+  border-radius:18px;
+  background:#fff;
+  border:2px solid #fed7aa;
+  color:#f97316;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* TABLE BOOKING */
+.table-box{
+  width:100%;
+  overflow:auto;
+}
+
+.booking-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.booking-table th{
+  text-align:left;
+  padding:16px 18px;
+  color:#9ca3af;
+  font-size:12px;
+  border-bottom:1px solid #ececec;
+}
+
+.booking-table td{
+  padding:18px;
+  border-bottom:1px solid #f3f4f6;
+  font-size:15px;
+  font-weight:700;
+}
+
+.table-badge{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:#4f46e5;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+}
+
+.time-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:30px;
+  padding:0 14px;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#4f46e5;
+  font-size:13px;
+}
+
+.status-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:30px;
+  padding:0 14px;
+  border-radius:999px;
+  background:#dcfce7;
+  color:#16a34a;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* ACTIONS */
+.actions-cell{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.table-action{
+  height:36px;
+  padding:0 16px;
+  border:none;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.table-action:hover{
+  opacity:.9;
+}
+
+.contact-btn{
+  background:#eef2ff;
+  color:#4f46e5;
+}
+
+.cancel-btn{
+  background:#fff1f2;
+  color:#e11d48;
+}
+
+.delete-btn{
+  background:#111827;
+  color:#fff;
+}
+
+/* BOOK BTN */
+.book-btn{
+  height:36px;
+  padding:0 16px;
+  border:none;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#4f46e5;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  width:520px;
+  background:#fff;
+  border-radius:28px;
+  padding:28px;
+}
+
+.modal-title{
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:24px;
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+.form-label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.form-input{
+  width:100%;
+  height:48px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:0 16px;
+  font-size:14px;
+}
+
+.modal-footer{
+  margin-top:24px;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+
+.cancel-modal-btn{
+  height:44px;
+  padding:0 20px;
+  border:none;
+  border-radius:14px;
+  background:#f3f4f6;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.save-btn{
+  height:44px;
+  padding:0 24px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+@media(max-width:1200px){
+
+  .wrapper{
+    width:calc(100% - 30px);
+  }
+
+}
+
+@media(max-width:900px){
+
+  .active-table{
+    width:100%;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:20px;
+  }
+
+  .booking-table{
+    min-width:850px;
+  }
+
+}
+
+</style>
+{% endblock %}
+{% block content %}
+
+  <!-- ACTIVE SESSION -->
+  <div class="card">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        THEO DÕI PHIÊN HOẠT ĐỘNG
+      </div>
+
+      <button class="sync-btn">
+        REAL-TIME SYNC
+      </button>
+
+    </div>
+
+    {% for t in active_tables %}
+<div class="active-table">
+
+  <div class="table-left">
+
+    <div class="table-number">
+      {{ t.table_id }}
+    </div>
+
+    <div class="table-info">
+
+      <h2>
+        {{ t.table_name }}
+
+        <span class="session">
+          ORDER #{{ t.order_id }}
+        </span>
+      </h2>
+
+      <div class="start-time">
+        BẮT ĐẦU: {{ t.order_time }}
+      </div>
+
+      <div style="margin-top:6px;color:green;font-weight:700;">
+        {{ "{:,.0f}".format(t.total_revenue) }} đ
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endfor %}
+
+  <!-- BOOKING -->
+  <div class="card">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        DANH SÁCH ĐẶT BÀN
+      </div>
+
+      <button class="book-btn" id="openModalBtn">
+        LỊCH HẸN KHÁCH
+      </button>
+
+    </div>
+
+    <div class="table-box">
+
+      <table class="booking-table">
+
+        <thead>
+
+          <tr>
+
+            <th>BÀN</th>
+            <th>TÊN KHÁCH HÀNG</th>
+            <th>THỜI GIAN ĐẶT</th>
+            <th>TRẠNG THÁI</th>
+            <th>HÀNH ĐỘNG</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="bookingBody">
+
+          {% for r in bookings %}
+<tr>
+
+  <td>
+    <div class="table-badge">
+      {{ r.table_id }}
+    </div>
+  </td>
+
+  <td>{{ r.customer_name }}</td>
+
+  <td>
+    {{ r.reservation_time }}
+  </td>
+
+  <td>
+    <span class="status-badge">
+      {{ r.status }}
+    </span>
+  </td>
+
+  <td>
+    <button class="table-action contact-btn" onclick="window.location.href='tel:{{ r.phone }}'">
+        Gọi
+    </button>
+    <button class="table-action cancel-btn"
+        onclick="cancelBooking('{{ r.reservation_id }}')">
+        Hủy
+    </button>
+  </td>
+
+</tr>
+{% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+<script>
+
+function cancelBooking(id){
+    if(!confirm("Xác nhận hủy đặt bàn?")) return;
+
+    window.location.href = "/admin/reservation/cancel/" + id;
+}
+
+</script>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+      Tạo lịch hẹn khách
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Số bàn
+      </label>
+
+      <input
+        type="number"
+        class="form-input"
+        id="tableNumber"
+        placeholder="Ví dụ: 5"
+      />
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Tên khách hàng
+      </label>
+
+      <input
+        type="text"
+        class="form-input"
+        id="customerName"
+        placeholder="Ví dụ: Nguyễn Văn B"
+      />
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Thời gian đặt
+      </label>
+
+      <input
+        type="datetime-local"
+        class="form-input"
+        id="bookingTime"
+      />
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="cancel-modal-btn" id="closeModalBtn">
+        Hủy
+      </button>
+
+      <button class="save-btn" id="saveBookingBtn">
+        Tạo lịch hẹn
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

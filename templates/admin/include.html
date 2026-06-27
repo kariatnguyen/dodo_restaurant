@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoDo Restaurant</title>
+
+<!-- EXPORT WORD -->
+<script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f3f4f6;
+  color:#0f172a;
+}
+
+/* HEADER */
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.logo-box{
+  width:30px;
+  height:30px;
+  border-radius:6px;
+  background:#f97316;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+
+.logo-text{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-weight:700;
+}
+
+.report-text{
+  color:#f97316;
+  font-size:12px;
+}
+
+.admin-name{
+  color:#6b7280;
+  font-size:14px;
+}
+
+/* CONTAINER */
+.container{
+  width:1400px;
+  margin:26px auto;
+}
+
+/* TOP */
+.top-section{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px;
+}
+
+.page-title{
+  font-size:32px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.page-subtitle{
+  color:#6b7280;
+  font-size:15px;
+}
+
+.export-btn{
+  height:48px;
+  padding:0 24px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* STATS */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:22px;
+  margin-bottom:28px;
+}
+
+.stat-card{
+  background:#fff;
+  border-radius:24px;
+  padding:24px;
+  border:1px solid #ececec;
+}
+
+.stat-label{
+  color:#6b7280;
+  font-size:14px;
+  margin-bottom:14px;
+}
+
+.stat-value{
+  font-size:34px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.stat-growth{
+  font-size:14px;
+  font-weight:700;
+  color:#16a34a;
+}
+
+/* CONTENT */
+.content-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:24px;
+}
+
+/* CHART */
+.chart-card{
+  background:#fff;
+  border-radius:28px;
+  padding:26px;
+  border:1px solid #ececec;
+}
+
+.card-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:26px;
+}
+
+.chart{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  height:320px;
+  gap:18px;
+}
+
+.bar-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.bar{
+  width:100%;
+  border-radius:18px 18px 0 0;
+  background:#f97316;
+  position:relative;
+}
+
+.bar-value{
+  position:absolute;
+  top:-28px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:13px;
+  font-weight:700;
+}
+
+.bar-label{
+  margin-top:12px;
+  font-size:14px;
+  font-weight:700;
+  color:#6b7280;
+}
+
+/* RIGHT */
+.right-column{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+
+.food-card{
+  background:#fff;
+  border-radius:28px;
+  padding:24px;
+  border:1px solid #ececec;
+}
+
+.food-list{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.food-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.food-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.food-rank{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  background:#fff7ed;
+  color:#f97316;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.food-name{
+  font-size:15px;
+  font-weight:700;
+}
+
+.food-orders{
+  color:#6b7280;
+  font-size:13px;
+}
+
+.food-total{
+  font-size:15px;
+  font-weight:800;
+}
+
+/* TABLE */
+.table-card{
+  background:#fff;
+  border-radius:28px;
+  padding:24px;
+  border:1px solid #ececec;
+  margin-top:28px;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.table th{
+  text-align:left;
+  padding:18px 14px;
+  color:#6b7280;
+  font-size:13px;
+  border-bottom:1px solid #ececec;
+}
+
+.table td{
+  padding:18px 14px;
+  border-bottom:1px solid #f3f4f6;
+  font-size:14px;
+  font-weight:700;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:30px;
+  padding:0 14px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.success{
+  background:#dcfce7;
+  color:#16a34a;
+}
+
+.pending{
+  background:#fef3c7;
+  color:#ca8a04;
+}
+
+.summary-list{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.summary-item{
+  display:flex;
+  justify-content:space-between;
+}
+
+@media(max-width:1450px){
+
+  .container{
+    width:calc(100% - 30px);
+  }
+
+}
+
+@media(max-width:1100px){
+
+  .stats-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .content-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .stats-grid{
+    grid-template-columns:1fr;
+  }
+
+  .top-section{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:18px;
+  }
+
+}
+
+/* NAV */
+
+.nav{
+  width:1150px;
+  margin:18px auto 0;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:14px;
+}
+
+.nav button{
+  height:42px;
+  padding:0 22px;
+  border:none;
+  border-radius:14px;
+  background:transparent;
+  font-size:15px;
+  font-weight:700;
+  color:#4b5563;
+  cursor:pointer;
+}
+
+.nav .active{
+  background:#f97316;
+  color:#fff;
+}
+
+</style>
+{% block content_css %}{% endblock %}
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="topbar">
+
+  <div class="logo">
+
+    <div class="logo-box">
+      DD
+    </div>
+
+    <div class="logo-text">
+      <span>DoDo Restaurant</span>
+    </div>
+
+  </div>
+
+  <div class="admin-name">
+    {{ session.get('name') }} | 
+    <a href="{{ url_for('logout') }}"
+      style="color:#6b7280; text-decoration:none; font-weight:600;">
+      Đăng xuất
+    </a>
+  </div>
+
+</div>
+
+<!-- NAV -->
+
+<div class="nav">
+<button class="menu-btn {% if request.endpoint == 'admin_dashboard' %}active{% endif %}"
+        onclick="location.href='{{ url_for('admin_dashboard') }}'">
+  Báo cáo
+</button>
+
+<button class="menu-btn {% if request.endpoint == 'admin_menu' %}active{% endif %}"
+        onclick="location.href='{{ url_for('admin_menu') }}'">
+  Thực đơn
+</button>
+
+<button class="menu-btn {% if request.endpoint == 'warehouse' %}active{% endif %}"
+        onclick="location.href='{{ url_for('warehouse') }}'">
+  Kho hàng
+</button>
+
+<button class="menu-btn {% if request.endpoint == 'table_dashboard' %}active{% endif %}"
+        onclick="location.href='{{ url_for('table_dashboard') }}'">
+  Quản lý bàn
+</button>
+
+<button class="menu-btn {% if request.endpoint == 'admin_staff' %}active{% endif %}"
+        onclick="location.href='{{ url_for('admin_staff') }}'">
+  Nhân sự
+</button>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+    <!-- Block flask session messages -->
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

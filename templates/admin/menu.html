@@ -1,0 +1,666 @@
+{% extends "admin/include.html" %}
+{% block content_css %}
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f3f4f6;
+  color:#111827;
+}
+
+/* TOPBAR */
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+}
+.wrapper{
+  width:1230px;
+  margin:22px auto;
+}
+
+/* PANEL */
+.panel{
+  background:#fff;
+  border-radius:28px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+}
+
+.panel-top{
+  height:82px;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #ececec;
+}
+
+.add-btn{
+  height:42px;
+  padding:0 22px;
+  border:none;
+  border-radius:14px;
+  background:#f97316;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* TABLE */
+.table-header,
+.table-row{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  align-items:center;
+  padding:16px 24px;
+}
+
+.table-header{
+  font-size:12px;
+  color:#9ca3af;
+  font-weight:700;
+  border-bottom:1px solid #ececec;
+}
+
+.table-row{
+  border-bottom:1px solid #f3f4f6;
+}
+
+/* ACTIONS */
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.action-btn{
+  height:36px;
+  padding:0 14px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+}
+
+.edit{ background:#4f46e5; }
+.delete{ background:#111827; }
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  width:420px;
+  background:#fff;
+  border-radius:20px;
+  padding:24px;
+}
+
+.modal-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.form-group{
+  margin-bottom:14px;
+}
+
+.form-label{
+  font-size:13px;
+  font-weight:700;
+  display:block;
+  margin-bottom:6px;
+}
+
+.form-input{
+  width:100%;
+  height:42px;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:0 10px;
+}
+
+.modal-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:18px;
+}
+
+.cancel-btn{
+  padding:10px 16px;
+  border:none;
+  border-radius:10px;
+  background:#e5e7eb;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.save-btn{
+  padding:10px 16px;
+  border:none;
+  border-radius:10px;
+  background:#f97316;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+
+{% if request.args.get('request') == 'menu' %}
+
+<div class="panel-top">
+  <p><a style="color:#1d1c1c; text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#1d1c1c'" href="{{ url_for('admin_menu') }}">Danh mục</a>/<b>THỰC ĐƠN</b></p>
+  <button class="add-btn" onclick="openAddProduct()">
+  + THÊM
+</button>
+</div>
+
+  <table style="width:100%; border-collapse:collapse; margin-top:20px; background:#fff;">
+
+    <thead>
+        <tr style="background:#f3f4f6;">
+            <th style="padding:14px; border-bottom:2px solid #ddd; text-align:left;">Ảnh</th>
+            <th style="padding:14px; border-bottom:2px solid #ddd; text-align:left;">Tên món</th>
+            <th style="padding:14px; border-bottom:2px solid #ddd; text-align:left;">Danh mục</th>
+            <th style="padding:14px; border-bottom:2px solid #ddd; text-align:left;">Giá</th>
+            <th style="padding:14px; border-bottom:2px solid #ddd; text-align:left;">Trạng thái</th>
+            <th style="padding:14px; border-bottom:2px solid #ddd; text-align:center;">Chức năng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for item in menu_items %}
+
+        <tr>
+
+            <!-- ẢNH -->
+            <td style="padding:12px; border-bottom:1px solid #eee;">
+                <img src="{{ item.img }}" alt="{{ item.item_name }}" style="width:70px;height:70px;object-fit:cover;border-radius:10px;">
+            </td>
+
+            <!-- TÊN -->
+            <td style="padding:12px; border-bottom:1px solid #eee; font-weight:bold;">
+                {{ item.item_name }}
+            </td>
+
+            <!-- DANH MỤC -->
+            <td style="padding:12px; border-bottom:1px solid #eee;">
+                {{ item.category_name }}
+            </td>
+
+            <!-- GIÁ -->
+            <td style="padding:12px; border-bottom:1px solid #eee;">
+                {{ "{:,.0f}".format(item.price) }} đ
+            </td>
+
+            <!-- TRẠNG THÁI -->
+            <td style="padding:12px; border-bottom:1px solid #eee;">
+
+                {% if item.status == "available" %}
+                    <span style="background:#dcfce7;color:#15803d;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:bold;">
+                        Đang bán
+                    </span>
+                {% else %}
+                    <span style="background:#fee2e2;color:#dc2626;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:bold;">
+                        Ngừng bán
+                    </span>
+                {% endif %}
+
+            </td>
+
+            <!-- CHỨC NĂNG -->
+            <td style="padding:12px; border-bottom:1px solid #eee; text-align:center;">
+              {% if item.status == "available" %}
+
+        <button
+            style="background:#dc2626;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;"
+            onclick="toggleStatus('{{ item.item_id }}', '{{ item.status }}')">
+            Dừng bán
+        </button>
+
+    {% else %}
+
+        <button
+            style="background:#4f46e5;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;"
+            onclick="toggleStatus('{{ item.item_id }}', '{{ item.status }}')">
+            Bán lại
+        </button>
+
+    {% endif %}
+
+                <button
+                  style="background:#4f46e5;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;"
+                  onclick="openEditProduct(
+                      '{{ item.item_id }}',
+                      '{{ item.item_name }}',
+                      '{{ item.price }}',
+                      '{{ item.category_id }}',
+                      '{{ item.img }}',
+                      '{{ item.status }}'
+                  )">
+                  Sửa
+              </button>
+
+                <button
+                    style="background:#dc2626;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;margin-left:6px;"
+                    onclick="deleteMenuProduct('{{ item.item_id }}')">
+                    Xóa
+                </button>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<div id="editProductModal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:999;">
+
+    <div style="width:450px;background:#fff;padding:20px;border-radius:12px;">
+
+        <h2 style="margin-bottom:15px;">Sửa sản phẩm</h2>
+
+        <form method="POST" action="/admin/menu/update_product">
+
+            <input type="hidden" name="item_id" id="edit_item_id">
+
+            <!-- Tên -->
+            <div style="margin-bottom:10px;">
+                <label>Tên sản phẩm</label>
+                <input name="name" id="edit_name" type="text"
+                       style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+            </div>
+
+            <!-- Giá -->
+            <div style="margin-bottom:10px;">
+                <label>Giá</label>
+                <input name="price" id="edit_price" type="number"
+                       style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+            </div>
+
+            <!-- Danh mục -->
+            <div style="margin-bottom:10px;">
+                <label>Danh mục</label>
+                <select name="category_id" id="edit_category"
+                        style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+                    {% for c in categories %}
+                        <option value="{{ c.category_id }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Ảnh -->
+            <div style="margin-bottom:10px;">
+                <label>Link ảnh</label>
+                <input name="img" id="edit_img" type="text"
+                       style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+            </div>
+
+            <!-- Status -->
+            <div style="margin-bottom:10px;">
+                <label>Trạng thái</label>
+                <select name="status" id="edit_status"
+                        style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="available">Hoạt động</option>
+                    <option value="unavailable">Không hoạt động</option>
+                </select>
+            </div>
+
+            <!-- BUTTON -->
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:15px;">
+
+                <button type="button"
+                        onclick="closeEditProduct()"
+                        style="padding:8px 12px;background:#eee;border:none;border-radius:8px;">
+                    Hủy
+                </button>
+
+                <button type="submit"
+                        style="padding:8px 12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;">
+                    Lưu
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function toggleStatus(id, currentStatus){
+
+    let newStatus = currentStatus === "available"
+        ? "unavailable"
+        : "available";
+
+    let text = newStatus === "available"
+        ? "bán lại"
+        : "dừng bán";
+
+    if(confirm("Bạn có muốn " + text + " sản phẩm này không?")){
+
+        window.location.href =
+            "/admin/menu/toggle_status/" + id + "/" + newStatus;
+    }
+}
+
+</script>
+
+<script>
+
+function openEditProduct(id, name, price, category_id, img, status){
+
+    document.getElementById("editProductModal").style.display = "flex";
+
+    document.getElementById("edit_item_id").value = id;
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_price").value = price;
+    document.getElementById("edit_category").value = category_id;
+    document.getElementById("edit_img").value = img;
+    document.getElementById("edit_status").value = status;
+}
+
+function closeEditProduct(){
+    document.getElementById("editProductModal").style.display = "none";
+}
+
+/* click outside */
+document.getElementById("editProductModal").onclick = function(e){
+    if(e.target === this){
+        closeEditProduct();
+    }
+}
+
+</script>
+
+<div id="addProductModal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:999;">
+
+    <div style="width:450px;background:#fff;padding:20px;border-radius:12px;">
+
+        <h2 style="margin-bottom:15px;">Thêm sản phẩm</h2>
+
+        <form method="POST" action="/admin/menu/add_product">
+
+            <!-- Tên món -->
+            <div style="margin-bottom:10px;">
+                <label>Tên sản phẩm</label>
+                <input name="name" type="text"
+                       style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+            </div>
+
+            <!-- Giá -->
+            <div style="margin-bottom:10px;">
+                <label>Giá</label>
+                <input name="price" type="number"
+                       style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+            </div>
+
+            <!-- Danh mục -->
+            <div style="margin-bottom:10px;">
+                <label>Danh mục</label>
+                <select name="category_id"
+                        style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+                    {% for c in categories %}
+                        <option value="{{ c.category_id }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Ảnh -->
+            <div style="margin-bottom:10px;">
+                <label>Link ảnh</label>
+                <input name="img" type="text"
+                       placeholder="https://..."
+                       style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+            </div>
+
+            <!-- Trang thái -->
+            <div style="margin-bottom:10px;">
+                <label>Trạng thái</label>
+                <select name="status" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="available">Hoạt động</option>
+                    <option value="unavailable">Không hoạt động</option>
+                </select>
+            </div>
+
+            <!-- BUTTON -->
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:15px;">
+
+                <button type="button"
+                        onclick="closeAddProduct()"
+                        style="padding:8px 12px;background:#eee;border:none;border-radius:8px;">
+                    Hủy
+                </button>
+
+                <button type="submit"
+                        style="padding:8px 12px;background:#f97316;color:#fff;border:none;border-radius:8px;">
+                    Lưu
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+function deleteMenuProduct(id){
+
+    if(confirm("Bạn có chắc muốn xóa sản phẩm này không?")){
+
+        window.location.href = "/admin/menu/delete_product/" + id;
+    }
+}
+
+function openAddProduct(){
+    document.getElementById("addProductModal").style.display = "flex";
+}
+
+function closeAddProduct(){
+    document.getElementById("addProductModal").style.display = "none";
+}
+
+/* click ngoài để tắt */
+document.getElementById("addProductModal").onclick = function(e){
+    if(e.target === this){
+        closeAddProduct();
+    }
+}
+
+</script>
+
+{% else %}
+
+<div class="panel-top">
+  <p><b>DANH MỤC</b>/<a style="color:#1d1c1c; text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#1d1c1c'" href="{{ url_for('admin_menu', request='menu') }}">Thực đơn</a></p>
+  <button class="add-btn" onclick="openAddPopup()">
+  + THÊM
+</button>
+</div>
+
+<div class="table-header">
+  <div>TÊN DANH MỤC</div>
+  <div>HÀNH ĐỘNG</div>
+</div>
+
+<!-- LIST -->
+<div>
+
+  {% for category in categories %}
+  <div class="table-row">
+
+    <div>{{ category.name }}</div>
+
+    <div class="actions">
+
+      <button class="action-btn edit"
+        onclick="openEditPopup('{{ category.category_id }}', '{{ category.name }}')">
+        Sửa
+      </button>
+
+        <button class="action-btn delete" onclick="if(confirm('Xóa danh mục sẽ xóa luôn tất cả sản phẩm liên quan. Bạn có chắc không?')); { window.location.href='/admin/menu/delete_category?category_id={{ category.category_id }}'; }">
+          Xóa
+        </button>
+
+    </div>
+
+  </div>
+  {% endfor %}
+
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editPopup" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">Sửa danh mục</div>
+
+    <form method="POST" action="/admin/menu/update_category">
+
+      <input type="hidden" id="category_id" name="category_id">
+
+      <div class="form-group">
+        <label class="form-label">Tên danh mục</label>
+        <input type="text" id="category_name" name="name" class="form-input">
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="button" class="cancel-btn" onclick="closeEditPopup()">
+          Hủy
+        </button>
+
+        <button type="submit" class="save-btn">
+          Lưu
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+<div id="addPopup" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">Thêm danh mục</div>
+
+    <form method="POST" action="/admin/menu/add_category">
+
+      <div class="form-group">
+        <label class="form-label">Tên danh mục</label>
+        <input type="text" name="name" class="form-input">
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="button" class="cancel-btn" onclick="closeAddPopup()">
+          Hủy
+        </button>
+
+        <button type="submit" class="save-btn">
+          Thêm
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+
+
+function openEditPopup(id, name){
+  document.getElementById("editPopup").classList.add("active");
+
+  document.getElementById("category_id").value = id;
+  document.getElementById("category_name").value = name;
+}
+
+function closeEditPopup(){
+  document.getElementById("editPopup").classList.remove("active");
+}
+
+/* click outside close */
+document.getElementById("editPopup").onclick = function(e){
+  if(e.target === this){
+    closeEditPopup();
+  }
+};
+
+
+
+</script>
+<script>
+
+function openAddPopup(){
+  document.getElementById("addPopup").classList.add("active");
+}
+
+function closeAddPopup(){
+  document.getElementById("addPopup").classList.remove("active");
+}
+
+/* safety: chạy sau khi DOM load */
+document.addEventListener("DOMContentLoaded", function(){
+
+  const popup = document.getElementById("addPopup");
+
+  if(popup){
+    popup.addEventListener("click", function(e){
+      if(e.target === popup){
+        closeAddPopup();
+      }
+    });
+  }
+
+});
+
+</script>
+
+{% endif %}
+{% endblock %}

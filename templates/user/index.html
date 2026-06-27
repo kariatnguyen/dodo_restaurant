@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DoDo Guest</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#f5f5f5;
+      color:#111827;
+      overflow-x:hidden;
+    }
+
+    .topbar{
+      height:54px;
+      background:#fff;
+      border-bottom:1px solid #e5e7eb;
+      display:flex;
+      align-items:center;
+      padding:0 8px;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .logo-box{
+      width:34px;
+      height:34px;
+      background:#f97316;
+      border-radius:4px;
+      color:#fff;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .logo-text{
+      display:flex;
+      gap:4px;
+      align-items:center;
+      font-weight:700;
+    }
+
+    .guest{
+      color:#f97316;
+      font-size:12px;
+    }
+
+    .layout{
+      width:1500px;
+      margin:22px auto;
+      display:flex;
+      gap:22px;
+      align-items:flex-start;
+    }
+
+    .left{
+      flex:1;
+    }
+
+    .table-card{
+      background:#fff;
+      border-radius:28px;
+      border:1px solid #ececec;
+      padding:18px 20px 30px;
+      position:relative;
+    }
+
+    .table-header{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .table-number{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      background:#f97316;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+    }
+
+    .table-info h2{
+      font-size:18px;
+      margin-bottom:4px;
+    }
+
+    .session{
+      font-size:10px;
+      color:#f97316;
+      font-weight:700;
+    }
+
+    .close-btn{
+      position:absolute;
+      right:20px;
+      top:20px;
+      font-size:30px;
+      color:#9ca3af;
+      cursor:pointer;
+    }
+
+    .tabs{
+      margin-top:20px;
+      height:54px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid #ececec;
+      display:flex;
+    }
+
+    .tab{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      font-weight:700;
+      color:#9ca3af;
+      position:relative;
+      cursor:pointer;
+    }
+
+    .tab.active{
+      color:#f97316;
+    }
+
+    .tab.active::after{
+      content:"";
+      position:absolute;
+      inset:5px;
+      border:2px solid #111;
+      border-radius:999px;
+    }
+
+    .filter-group{
+      margin-top:24px;
+      display:flex;
+      gap:10px;
+    }
+
+    .filter-btn{
+      height:36px;
+      padding:0 22px;
+      border-radius:999px;
+      border:1px solid #ececec;
+      background:#fff;
+      font-weight:700;
+      color:#4b5563;
+      cursor:pointer;
+    }
+
+    .filter-btn.active{
+      background:#f97316;
+      color:#fff;
+      border-color:#f97316;
+    }
+
+    .menu-grid{
+      margin-top:30px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+    }
+
+    .food-card{
+      height:138px;
+      background:#fff;
+      border-radius:26px;
+      border:1px solid #efefef;
+      overflow:hidden;
+      display:flex;
+      position:relative;
+    }
+
+    .food-image{
+      width:140px;
+      height:100%;
+      object-fit:cover;
+      flex-shrink:0;
+    }
+
+    .food-content{
+      padding:16px 18px;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .food-title{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .food-price{
+      color:#f97316;
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:auto;
+    }
+
+    .food-category{
+      color:#d1d5db;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:1px;
+    }
+
+    .add-btn{
+      position:absolute;
+      right:18px;
+      bottom:18px;
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:50%;
+      background:#f97316;
+      color:#fff;
+      font-size:32px;
+      cursor:pointer;
+      box-shadow:0 8px 20px rgba(249,115,22,0.35);
+    }
+
+    .cart-panel{
+      width:360px;
+      background:#fff;
+      border-radius:28px;
+      border:1px solid #ececec;
+      padding:22px;
+      position:sticky;
+      top:20px;
+    }
+
+    .cart-title{
+      font-size:22px;
+      font-weight:700;
+      margin-bottom:20px;
+    }
+
+    .cart-empty{
+      color:#9ca3af;
+      font-size:14px;
+      text-align:center;
+      padding:40px 0;
+    }
+
+    .cart-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      margin-bottom:20px;
+      max-height:500px;
+      overflow:auto;
+    }
+
+    .cart-item{
+      border:1px solid #f1f1f1;
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .cart-item-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+
+    .cart-item-name{
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .cart-item-price{
+      color:#f97316;
+      font-weight:700;
+      font-size:14px;
+      margin-top:5px;
+    }
+
+    .qty-controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .qty-btn{
+      width:30px;
+      height:30px;
+      border:none;
+      border-radius:10px;
+      background:#f3f4f6;
+      font-size:20px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .qty-number{
+      min-width:20px;
+      text-align:center;
+      font-weight:700;
+    }
+
+    .cart-footer{
+      border-top:1px solid #eee;
+      padding-top:18px;
+    }
+
+    .total{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:18px;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .order-btn{
+      width:100%;
+      height:52px;
+      border:none;
+      border-radius:18px;
+      background:#f97316;
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    #orderedSection,
+    #paymentSection{
+      display:none;
+      margin-top:30px;
+    }
+
+    @media(max-width:1400px){
+      .layout{
+        width:calc(100% - 30px);
+      }
+    }
+
+    @media(max-width:1100px){
+      .layout{
+        flex-direction:column;
+      }
+
+      .cart-panel{
+        width:100%;
+        position:relative;
+      }
+
+      .menu-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="logo">
+
+      <div class="logo-box">
+        DD
+      </div>
+
+      <div class="logo-text">
+        <span>DoDo</span>
+        <span class="guest">GUEST</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT -->
+    <div class="left">
+
+      <div class="table-card">
+
+        <div class="table-header">
+
+          <div class="table-number">
+            {{ session["table_id"] }}
+          </div>
+
+          <div class="table-info">
+            <h2>{{ session["table_name"] }}</h2>
+            <div class="session">
+              PHIÊN: {{ session["table_code"] }}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="close-btn">
+          ×
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+
+          <div class="tab active" data-tab="menu">
+            THỰC ĐƠN
+          </div>
+
+          <div class="tab" data-tab="ordered">
+            ĐÃ GỌI
+          </div>
+
+          <div class="tab" data-tab="payment">
+            THANH TOÁN
+          </div>
+
+        </div>
+
+        <!-- FILTER -->
+        <div class="filter-group">
+          <button class="filter-btn active">
+            Tất cả
+          </button>
+          {% for category in categories %}
+            <button class="filter-btn">
+              {{ category.name }}
+            </button>
+          {% endfor %}
+        </div>
+
+        <!-- MENU -->
+        <div class="menu-grid" id="menuGrid">
+          {% for item in food %}
+            <div class="food-card"
+                data-id="{{ item.item_id }}"
+                data-name="{{ item.name }}"
+                data-price="{{ item.price }}">
+
+              <img class="food-image"
+                  src="{{ item.img if item.img else 'https://via.placeholder.com/300' }}"/>
+
+              <div class="food-content">
+                <div class="food-title">
+                  {{ item.name }}
+                </div>
+
+                <div class="food-price">
+                  {{ "{:,.0f}".format(item.price) }}đ
+                </div>
+
+                <div class="food-category">
+                  {{ item.category_name }}
+                </div>
+              </div>
+
+              <button class="add-btn">
+                +
+              </button>
+
+            </div>
+          {% endfor %}  
+
+        <!-- ORDERED -->
+        <div id="orderedSection">
+
+          <div style="
+            background:#fff;
+            border:1px solid #ececec;
+            border-radius:26px;
+            padding:22px;
+          ">
+
+            <div style="
+              font-size:20px;
+              font-weight:700;
+              margin-bottom:20px;
+            ">
+              Danh sách đã gọi
+            </div>
+
+            <div id="orderedList">
+
+              <div style="
+                color:#9ca3af;
+                text-align:center;
+                padding:30px 0;
+              ">
+                Chưa có món nào được gọi
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- PAYMENT -->
+        <div id="paymentSection">
+
+          <div style="
+            background:#fff;
+            border-radius:40px;
+            border:1px solid #ececec;
+            padding:34px 32px 26px;
+          ">
+
+            <!-- TOTAL -->
+            <div style="
+              text-align:center;
+              margin-bottom:30px;
+            ">
+
+              <div style="
+                color:#9ca3af;
+                font-size:12px;
+                font-weight:700;
+                letter-spacing:2px;
+                margin-bottom:8px;
+              ">
+                HÓA ĐƠN THANH TOÁN
+              </div>
+
+              <div id="paymentTotal" style="
+                font-size:58px;
+                font-weight:800;
+                line-height:1;
+                color:#0f172a;
+              ">
+                0đ
+              </div>
+
+            </div>
+
+            <!-- BILL -->
+            <div id="billList" style="
+              border:1px solid #efefef;
+              border-radius:24px;
+              overflow:hidden;
+              margin-bottom:24px;
+            ">
+
+            </div>
+
+            <!-- CONFIRM -->
+            <button id="confirmPaymentBtn" style="
+              width:100%;
+              height:58px;
+              border:none;
+              border-radius:22px;
+              background:#f97316;
+              color:#fff;
+              font-size:18px;
+              font-weight:700;
+              cursor:pointer;
+              margin-bottom:24px;
+            ">
+              Xác nhận thanh toán
+            </button>
+
+            <!-- QR -->
+            <div id="qrPaymentArea" style="display:none;">
+
+              <div style="
+                display:flex;
+                justify-content:center;
+                margin-bottom:36px;
+              ">
+
+                <div style="
+                  position:relative;
+                ">
+
+                  <div style="
+                    width:280px;
+                    height:280px;
+                    border-radius:36px;
+                    border:4px solid #f8efe6;
+                    background:#fff;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    overflow:hidden;
+                  ">
+
+                    <img
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=ThanhToanDoDo"
+                      style="
+                        width:220px;
+                        height:220px;
+                        object-fit:contain;
+                      "
+                    />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div style="
+                background:#fafafa;
+                border-radius:20px;
+                padding:16px;
+                text-align:center;
+                margin-bottom:30px;
+                color:#6b7280;
+                font-size:15px;
+                line-height:1.7;
+                font-style:italic;
+              ">
+
+                <div style="font-weight:700;">
+                  Vui lòng quét mã QR để thanh toán.
+                </div>
+
+                <div>
+                  Chúng tôi sẽ nhận được thông báo ngay lập tức.
+                </div>
+
+              </div>
+
+              <button id="paidBtn" style="
+                width:100%;
+                height:62px;
+                border:none;
+                border-radius:24px;
+                background:#9ca3af;
+                color:#fff;
+                font-size:28px;
+                font-weight:800;
+                letter-spacing:3px;
+                cursor:pointer;
+              ">
+                TÔI ĐÃ CHUYỂN KHOẢN
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="cart-panel">
+
+      <div class="cart-title">
+        Yêu cầu gọi món
+      </div>
+
+      <div class="cart-list" id="cartList">
+
+        <div class="cart-empty">
+          Chưa có món nào được chọn
+        </div>
+
+      </div>
+
+      <div class="cart-footer">
+
+        <div class="total">
+          <span>Tổng</span>
+          <span id="totalPrice">0đ</span>
+        </div>
+
+        <button class="order-btn" id="orderBtn">
+          Yêu cầu gọi món
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const cart = [];
+
+    const cartList = document.getElementById("cartList");
+    const totalPrice = document.getElementById("totalPrice");
+    const orderedList = document.getElementById("orderedList");
+    const billList = document.getElementById("billList");
+
+    // FORMAT
+    function formatPrice(price){
+      return price.toLocaleString("vi-VN") + "đ";
+    }
+
+    // TABS
+    const tabs = document.querySelectorAll(".tab");
+
+    tabs.forEach(tab => {
+
+      tab.addEventListener("click", () => {
+
+        tabs.forEach(t => t.classList.remove("active"));
+
+        tab.classList.add("active");
+
+        const type = tab.dataset.tab;
+
+        document.getElementById("menuGrid").style.display = "none";
+        document.querySelector(".filter-group").style.display = "none";
+        document.getElementById("orderedSection").style.display = "none";
+        document.getElementById("paymentSection").style.display = "none";
+
+        if(type === "menu"){
+
+          document.getElementById("menuGrid").style.display = "grid";
+          document.querySelector(".filter-group").style.display = "flex";
+
+        }
+
+        if(type === "ordered"){
+
+          document.getElementById("orderedSection").style.display = "block";
+
+        }
+
+        if(type === "payment"){
+
+          document.getElementById("paymentSection").style.display = "block";
+
+          document.getElementById("qrPaymentArea").style.display = "none";
+
+          document.getElementById("confirmPaymentBtn").style.display = "block";
+
+          renderPaymentTotal();
+
+          renderBill();
+
+        }
+
+      });
+
+    });
+
+    // ADD FOOD
+    document.querySelectorAll(".add-btn").forEach(btn => {
+
+      btn.addEventListener("click", () => {
+
+        const card = btn.closest(".food-card");
+
+        const id = card.dataset.id;
+        const name = card.dataset.name;
+        const price = Number(card.dataset.price);
+
+        const existing = cart.find(item => item.id === id);
+
+        if(existing){
+
+          if(existing.qty < 10){
+            existing.qty++;
+          }
+
+        }else{
+
+          cart.push({
+            id,
+            name,
+            price,
+            qty:1
+          });
+
+        }
+
+        renderCart();
+
+      });
+
+    });
+
+    // RENDER CART
+    function renderCart(){
+
+      if(cart.length === 0){
+
+        cartList.innerHTML = `
+          <div class="cart-empty">
+            Chưa có món nào được chọn
+          </div>
+        `;
+
+        totalPrice.innerHTML = "0đ";
+
+        return;
+
+      }
+
+      cartList.innerHTML = "";
+
+      let total = 0;
+
+      cart.forEach(item => {
+
+        total += item.price * item.qty;
+
+        const div = document.createElement("div");
+
+        div.className = "cart-item";
+
+        div.innerHTML = `
+          <div class="cart-item-top">
+
+            <div>
+
+              <div class="cart-item-name">
+                ${item.name}
+              </div>
+
+              <div class="cart-item-price">
+                ${formatPrice(item.price)}
+              </div>
+
+            </div>
+
+            <div class="qty-controls">
+
+              <button class="qty-btn minus-btn"
+                      data-id="${item.id}">
+                -
+              </button>
+
+              <div class="qty-number">
+                ${item.qty}
+              </div>
+
+              <button class="qty-btn plus-btn"
+                      data-id="${item.id}">
+                +
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+        cartList.appendChild(div);
+
+      });
+
+      totalPrice.innerHTML = formatPrice(total);
+
+      handleQtyButtons();
+
+    }
+
+    // HANDLE QTY
+    function handleQtyButtons(){
+
+      document.querySelectorAll(".plus-btn").forEach(btn => {
+
+        btn.onclick = () => {
+
+          const id = btn.dataset.id;
+
+          const item = cart.find(i => i.id === id);
+
+          if(item.qty < 10){
+            item.qty++;
+          }
+
+          renderCart();
+
+        };
+
+      });
+
+      document.querySelectorAll(".minus-btn").forEach(btn => {
+
+        btn.onclick = () => {
+
+          const id = btn.dataset.id;
+
+          const index = cart.findIndex(i => i.id === id);
+
+          if(cart[index].qty > 1){
+
+            cart[index].qty--;
+
+          }else{
+
+            cart.splice(index,1);
+
+          }
+
+          renderCart();
+
+        };
+
+      });
+
+    }
+
+    // ORDERED
+    function renderOrderedFoods(){
+
+      if(orderedFoods.length === 0){
+
+        orderedList.innerHTML = `
+          <div style="
+            color:#9ca3af;
+            text-align:center;
+            padding:30px 0;
+          ">
+            Chưa có món nào được gọi
+          </div>
+        `;
+
+        return;
+
+      }
+
+      orderedList.innerHTML = "";
+
+      orderedFoods.forEach(item => {
+
+        const div = document.createElement("div");
+
+        div.style.cssText = `
+          border:1px solid #efefef;
+          border-radius:18px;
+          padding:18px;
+          margin-bottom:14px;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          background:#fff;
+        `;
+
+        div.innerHTML = `
+          <div style="
+            font-size:16px;
+            font-weight:700;
+          ">
+            ${item.name}
+          </div>
+
+          <div style="
+            width:38px;
+            height:38px;
+            border-radius:12px;
+            background:#f97316;
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+          ">
+            x${item.qty}
+          </div>
+        `;
+
+        orderedList.appendChild(div);
+
+      });
+
+    }
+
+    // PAYMENT TOTAL
+    function renderPaymentTotal(){
+
+      let total = 0;
+
+      orderedFoods.forEach(item => {
+
+        const food = cartData.find(
+          f => f.id === item.id
+        );
+
+        if(food){
+          total += food.price * item.qty;
+        }
+
+      });
+
+      document.getElementById("paymentTotal")
+        .innerHTML = formatPrice(total);
+
+    }
+
+    // BILL
+    function renderBill(){
+
+      if(orderedFoods.length === 0){
+
+        billList.innerHTML = `
+          <div style="
+            padding:40px;
+            text-align:center;
+            color:#9ca3af;
+          ">
+            Chưa có món để thanh toán
+          </div>
+        `;
+
+        return;
+
+      }
+
+      let html = `
+        <div style="
+          display:grid;
+          grid-template-columns:2fr 1fr 1fr;
+          padding:16px 20px;
+          background:#fafafa;
+          font-weight:700;
+          border-bottom:1px solid #efefef;
+        ">
+
+          <div>Món</div>
+
+          <div style="text-align:center;">
+            SL
+          </div>
+
+          <div style="text-align:right;">
+            Giá
+          </div>
+
+        </div>
+      `;
+
+      orderedFoods.forEach(item => {
+
+        const food = cartData.find(
+          f => f.id === item.id
+        );
+
+        html += `
+          <div style="
+            display:grid;
+            grid-template-columns:2fr 1fr 1fr;
+            padding:18px 20px;
+            border-bottom:1px solid #f5f5f5;
+            align-items:center;
+          ">
+
+            <div style="
+              font-weight:700;
+            ">
+              ${item.name}
+            </div>
+
+            <div style="
+              text-align:center;
+              font-weight:700;
+              color:#f97316;
+            ">
+              x${item.qty}
+            </div>
+
+            <div style="
+              text-align:right;
+              font-weight:700;
+            ">
+              ${formatPrice(food.price)}
+            </div>
+
+          </div>
+        `;
+
+      });
+
+      billList.innerHTML = html;
+
+    }
+
+    // ORDER
+    document.getElementById("orderBtn")
+      .addEventListener("click", () => {
+
+        if(cart.length === 0){
+
+          alert("Vui lòng chọn món");
+
+          return;
+
+        }
+
+        cart.forEach(cartItem => {
+
+          const existing = orderedFoods.find(
+            item => item.id === cartItem.id
+          );
+
+          if(existing){
+
+            existing.qty += cartItem.qty;
+
+          }else{
+
+            orderedFoods.push({
+              id: cartItem.id,
+              name: cartItem.name,
+              qty: cartItem.qty
+            });
+
+          }
+
+        });
+
+        renderOrderedFoods();
+
+        cart.length = 0;
+
+        renderCart();
+
+        alert("Đã gửi yêu cầu gọi món");
+
+      });
+
+    // CONFIRM PAYMENT
+    document.getElementById("confirmPaymentBtn")
+      .addEventListener("click", () => {
+
+        if(orderedFoods.length === 0){
+
+          alert("Chưa có món để thanh toán");
+
+          return;
+
+        }
+
+        document.getElementById("qrPaymentArea")
+          .style.display = "block";
+
+        document.getElementById("confirmPaymentBtn")
+          .style.display = "none";
+
+      });
+
+    // PAID
+    document.getElementById("paidBtn")
+      .addEventListener("click", () => {
+
+        alert("Nhà hàng đã nhận được yêu cầu xác nhận thanh toán.");
+
+      });
+
+  </script>
+
+</body>
+</html>
