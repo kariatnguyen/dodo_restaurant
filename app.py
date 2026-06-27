@@ -15,10 +15,10 @@ app.secret_key = "DODO_SECRET_KEY"
 class MySQLConnection:
 
     def __init__(self):
-        self.host = "localhost"
-        self.user = "restaurantManagementSoftware_user"
-        self.password = "Vka9!U!u4!7!6He0"
-        self.database = "restaurantManagementSoftware"
+        self.host = "mysql.railway.internal"
+        self.user = "root"
+        self.password = "dioCSfUNCDGREmhJKxFCtzQngIkEnAUU"
+        self.database = "railway"
 
     def connect(self):
         try:
