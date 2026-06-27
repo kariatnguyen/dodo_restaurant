@@ -2,7 +2,8 @@ import re
 
 from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
-from flask import Flask, render_templateimport os
+from flask import Flask, render_template
+import os
 
 app = Flask(__name__)
 app.secret_key = "DODO_SECRET_KEY"
